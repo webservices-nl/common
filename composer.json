@@ -1,0 +1,45 @@
+{
+  "name": "webservices-nl/common",
+  "description": "Webservices Common library for Webservices.nl PHP shared business code",
+  "keywords": [
+    "common",
+    "webservicesnl",
+    "webservices.nl"
+  ],
+  "config": {
+    "gitlab-domains": [
+      "gitlab.fdmg.org"
+    ],
+    "preferred-install": "dist"
+  },
+  "type": "library",
+  "require": {
+    "php": "^5.4",
+    "doctrine/collections": "^1.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5",
+    "mockery/mockery": "^0.9.4",
+    "league/factory-muffin": "^2.1",
+    "league/factory-muffin-faker": "~1.0-beta"
+  },
+  "autoload": {
+    "psr-4": {
+      "Webservicesnl\\Endpoint\\": "src/Common/Endpoint",
+      "Webservicesnl\\Exception\\": "src/Common/Exception"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Webservicesnl\\Test\\": "test/"
+    }
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "WebservicesNL",
+      "email": "tech@webservices.nl",
+      "homepage": "http://www.webservices.nl"
+    }
+  ]
+}
