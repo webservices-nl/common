@@ -97,7 +97,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * Test if adding first and subsequent Endpoints are resp. set to Active or Disabled
      */
-    public function testAddingEndpoints()
+    public function testAddingEndpoint()
     {
         $manager = new Manager();
 
@@ -129,6 +129,25 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
             $manager->getEndpoints()->get(2)->getStatus(),
             'Extra endpoints are always set to disabled'
         );
+    }
+
+    /**
+     * Test setting multiple endpoints
+     */
+    public function testAddingEndpoints()
+    {
+        $manager = new Manager();
+
+        $number = 3;
+        $endpoints = FactoryMuffin::seed(
+            $number,
+            'Webservicesnl\Endpoint\Endpoint',
+            ['status' => Endpoint::STATUS_DISABLED]
+        );
+
+        //
+        $manager->addEndpoints($endpoints);
+        $this->assertCount($number, $manager->getEndpoints());
     }
 
     /**
