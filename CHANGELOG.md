@@ -5,5 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 - probably a lot of bugs  
 
+## [0.0.2] (2016-02-12) 
+- Added addEndpoints
+
 ## [0.0.1] (2016-02-17)
 - Initial release
