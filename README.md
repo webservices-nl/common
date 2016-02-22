@@ -9,4 +9,4 @@
 
 
 ## Version
-Latest version 0.01
+Latest version 0.02
