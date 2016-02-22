@@ -52,6 +52,18 @@ class Manager
     }
 
     /**
+     * @param array|Endpoint[]
+     *
+     * @throws InvalidException
+     */
+    public function addEndpoints(array $endpoints = [])
+    {
+        foreach ($endpoints as $endpoint) {
+            $this->addEndpoint($endpoint);
+        }
+    }
+
+    /**
      * Add Endpoint into the pool.
      *
      * @param Endpoint $newEndpoint
