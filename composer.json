@@ -25,6 +25,7 @@
   },
   "autoload": {
     "psr-4": {
+      "Webservicesnl\\Common\\": "src/Common/Config",
       "Webservicesnl\\Endpoint\\": "src/Common/Endpoint",
       "Webservicesnl\\Exception\\": "src/Common/Exception"
     }
