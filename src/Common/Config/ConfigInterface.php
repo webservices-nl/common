@@ -12,9 +12,9 @@ namespace Webservicesnl\Common\Config;
 interface ConfigInterface
 {
     /**
-     * @param array $settings
+     * @param mixed $settings
      *
      * @return mixed
      */
-    public static function configure(array $settings);
+    public static function configure($settings);
 }
