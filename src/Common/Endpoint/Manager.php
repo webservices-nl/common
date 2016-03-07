@@ -1,10 +1,10 @@
 <?php
 
-namespace Webservicesnl\Endpoint;
+namespace Webservicesnl\Common\Endpoint;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Webservicesnl\Exception\Client\Input\InvalidException;
-use Webservicesnl\Exception\Server\NoServerAvailableException;
+use Webservicesnl\Common\Exception\Client\Input\InvalidException;
+use Webservicesnl\Common\Exception\Server\NoServerAvailableException;
 
 /**
  * Class Manager.

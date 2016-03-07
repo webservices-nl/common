@@ -1,7 +1,6 @@
 <?php
 
-namespace Webservicesnl\Exception;
-
+namespace Webservicesnl\Common\Exception;
 
 class Exception extends \Exception
 {

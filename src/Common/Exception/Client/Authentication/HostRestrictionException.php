@@ -1,6 +1,6 @@
 <?php
 
-namespace Webservicesnl\Exception\Client\Authentication;
+namespace Webservicesnl\Common\Exception\Client\Authentication;
 
 use Webservicesnl\Exception\Client\AuthenticationException;
 

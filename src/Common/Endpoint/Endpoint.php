@@ -1,8 +1,8 @@
 <?php
 
-namespace Webservicesnl\Endpoint;
+namespace Webservicesnl\Common\Endpoint;
 
-use Webservicesnl\Exception\Client\InputException;
+use Webservicesnl\Common\Exception\Client\InputException;
 
 /**
  * Class Endpoint.

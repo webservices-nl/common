@@ -4,7 +4,7 @@ namespace Webservicesnl\Test\Endpoint;
 
 use League\FactoryMuffin\Facade as FactoryMuffin;
 
-use Webservicesnl\Endpoint\Endpoint;
+use Webservicesnl\Common\Endpoint\Endpoint;
 
 /**
  * Class EndpointTest
@@ -41,7 +41,7 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
         // create an instance with all of the possible statuses
         foreach (Endpoint::$statuses as $status) {
             /** @var Endpoint $instance */
-            $instance = FactoryMuffin::instance('Webservicesnl\Endpoint\Endpoint', ['status' => $status]);
+            $instance = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint', ['status' => $status]);
 
             // check if status check are valid
             $this->assertEquals($instance->isActive(), $status === Endpoint::STATUS_ACTIVE);
@@ -61,7 +61,7 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
     public function testInvalidStatus()
     {
         /** @var Endpoint $instance */
-        $instance = FactoryMuffin::instance('Webservicesnl\Endpoint\Endpoint');
+        $instance = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint');
         $this->expectException('\InvalidArgumentException');
         $instance->setStatus('fake');
     }

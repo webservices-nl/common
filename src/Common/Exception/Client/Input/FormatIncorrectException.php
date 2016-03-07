@@ -1,8 +1,8 @@
 <?php
 
-namespace Webservicesnl\Exception\Client\Input;
+namespace Webservicesnl\Common\Exception\Client\Input;
 
-use Webservicesnl\Exception\Client\InputException;
+use Webservicesnl\Common\Exception\Client\InputException;
 
 /**
  * Class FormatIncorrectException.

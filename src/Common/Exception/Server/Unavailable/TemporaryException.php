@@ -1,8 +1,8 @@
 <?php
 
-namespace Webservicesnl\Exception\Server\Unavailable;
+namespace Webservicesnl\Common\Exception\Server\Unavailable;
 
-use Webservicesnl\Exception\Server\UnavailableException;
+use Webservicesnl\Common\Exception\Server\UnavailableException;
 
 /**
  * Class TemporaryException.

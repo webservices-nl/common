@@ -1,13 +1,12 @@
 <?php
 
-namespace Webservicesnl\Exception\Server\Data;
+namespace Webservicesnl\Common\Exception\Server\Data;
 
-use Webservicesnl\Exception\Server\DataException;
+use Webservicesnl\Common\Exception\Server\DataException;
 
 /**
- * Class PageNotFoundException
+ * Class PageNotFoundException.
  *
- * @package Webservicesnl\Exception\Server\Data
  */
 class PageNotFoundException extends DataException
 {
