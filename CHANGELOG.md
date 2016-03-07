@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-- probably a lot of bugs  
+- probably a lot of bugs
+  
+## [0.0.4] (2016-03-07) 
+- Added Client Namespace
+- Added ClientFactoryInterface and ClientInterface  
 
 ## [0.0.3] (2016-03-03) 
 - Added Config interface
