@@ -3,16 +3,15 @@
 namespace Webservicesnl\Test\Endpoint;
 
 use League\FactoryMuffin\Facade as FactoryMuffin;
-
 use Webservicesnl\Common\Endpoint\Endpoint;
 
 /**
- * Class EndpointTest
+ * Class EndpointTest.
  */
 class EndpointTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Setup
+     * Setup.
      */
     public static function setupBeforeClass()
     {
@@ -34,7 +33,7 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test if all statuses are returned correctly
+     * Test if all statuses are returned correctly.
      */
     public function testInstantiation()
     {
