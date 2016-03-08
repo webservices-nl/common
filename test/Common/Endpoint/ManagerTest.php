@@ -13,7 +13,7 @@ use Webservicesnl\Common\Exception\Client\Input\InvalidException;
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     *
+     * Setup.
      */
     public static function setupBeforeClass()
     {
@@ -42,7 +42,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $manager = new Manager();
         $this->assertEmpty($manager->getEndpoints());
 
-        $this->expectExceptionMessage('No server available');
+        $this->expectExceptionMessage('No active server available');
         $manager->getActiveEndpoint();
     }
 
@@ -163,7 +163,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\ClientException
+     * @expectedException \Webservicesnl\Common\Exception\Client\Input\InvalidException
      * @expectedExceptionMessage Can not activate this endpoint
      */
     public function testEnableEndpointInError()
@@ -297,7 +297,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
+     * @expectedException \Webservicesnl\Common\Exception\Client\Input\InvalidException
      * @expectedExceptionMessage Endpoint is not part of this manager
      */
     public function testInvalidEndpoint()
