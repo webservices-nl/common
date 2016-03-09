@@ -1,13 +1,18 @@
 <?php
 
-namespace Webservicesnl\Exception\Server;
+namespace Webservicesnl\Common\Exception\Server;
 
-use Webservicesnl\Exception\ServerException;
+use Webservicesnl\Common\Exception\ServerException;
 
 /**
  * Class NoServerAvailableException.
  */
 class NoServerAvailableException extends ServerException
 {
-    protected $errorMessage = 'We seem to have lost our servers';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'We seem to have lost our servers';
 }

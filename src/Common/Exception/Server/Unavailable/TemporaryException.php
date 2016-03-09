@@ -1,13 +1,18 @@
 <?php
 
-namespace Webservicesnl\Exception\Server\Unavailable;
+namespace Webservicesnl\Common\Exception\Server\Unavailable;
 
-use Webservicesnl\Exception\Server\UnavailableException;
+use Webservicesnl\Common\Exception\Server\UnavailableException;
 
 /**
  * Class TemporaryException.
  */
 class TemporaryException extends UnavailableException
 {
-    protected $errorMessage = 'The service is unavailable due to a temporary technical problem';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'The service is unavailable due to a temporary technical problem';
 }

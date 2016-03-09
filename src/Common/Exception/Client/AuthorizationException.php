@@ -1,13 +1,18 @@
 <?php
 
-namespace Webservicesnl\Exception\Client;
+namespace Webservicesnl\Common\Exception\Client;
 
-use Webservicesnl\Exception\ClientException;
+use Webservicesnl\Common\Exception\ClientException;
 
 /**
  * Class AuthorizationException.
  */
 class AuthorizationException extends ClientException
 {
-    protected $errorMessage = 'The client is authenticated, but isn’t allowed to use the requested functionality';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'The client is authenticated, but isn’t allowed to use the requested functionality';
 }

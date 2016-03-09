@@ -1,13 +1,18 @@
 <?php
 
-namespace Webservicesnl\Exception\Client\Input;
+namespace Webservicesnl\Common\Exception\Client\Input;
 
-use Webservicesnl\Exception\Client\InputException;
+use Webservicesnl\Common\Exception\Client\InputException;
 
 /**
  * Class FormatIncorrectException.
  */
 class FormatIncorrectException extends InputException
 {
-    protected $errorMessage = 'One of the parameters contains a syntax error or is in an incorrect format';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'One of the parameters contains a syntax error or is in an incorrect format';
 }

@@ -1,13 +1,18 @@
 <?php
 
-namespace Webservicesnl\Exception\Client;
+namespace Webservicesnl\Common\Exception\Client;
 
-use Webservicesnl\Exception\ClientException;
+use Webservicesnl\Common\Exception\ClientException;
 
 /**
  * Class ClientPaymentException.
  */
 class PaymentException extends ClientException
 {
-    protected $errorMessage = 'The request cannot be processed, due to sufficient balance/credits';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'The request cannot be processed, due to sufficient balance/credits';
 }

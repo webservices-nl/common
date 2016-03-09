@@ -1,13 +1,16 @@
 <?php
 
-namespace Webservicesnl\Exception\Server;
+namespace Webservicesnl\Common\Exception\Server;
 
-use Webservicesnl\Exception\ServerException;
+use Webservicesnl\Common\Exception\ServerException;
 
 /**
  * Class DataException.
  */
 class DataException extends ServerException
 {
-    protected $errorMessage = 'An error occurred while retrieving requested data';
+    /**
+     * @var string
+     */
+    protected static $errorMessage = 'An error occurred while retrieving requested data';
 }

@@ -1,13 +1,18 @@
 <?php
 
-namespace Webservicesnl\Exception\Server\Unavailable;
+namespace Webservicesnl\Common\Exception\Server\Unavailable;
 
-use Webservicesnl\Exception\Server\UnavailableException;
+use Webservicesnl\Common\Exception\Server\UnavailableException;
 
 /**
  * Class UnavailableInternalErrorException.
  */
 class InternalErrorException extends UnavailableException
 {
-    protected $errorMessage = 'The service is unavailable due to an internal server error';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'The service is unavailable due to an internal server error';
 }

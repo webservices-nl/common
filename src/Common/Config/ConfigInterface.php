@@ -3,11 +3,10 @@
 namespace Webservicesnl\Common\Config;
 
 /**
- * Interface ConfigurableInterface
+ * Interface ConfigurableInterface.
  *
  * This is a generic interface for returning a declaration (config) object
  *
- * @package Webservicesnl\Common\Config
  */
 interface ConfigInterface
 {

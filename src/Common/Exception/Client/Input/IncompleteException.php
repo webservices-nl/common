@@ -1,13 +1,18 @@
 <?php
 
-namespace Webservicesnl\Exception\Client\Input;
+namespace Webservicesnl\Common\Exception\Client\Input;
 
-use Webservicesnl\Exception\Client\InputException;
+use Webservicesnl\Common\Exception\Client\InputException;
 
 /**
  * Class IncompleteException.
  */
 class IncompleteException extends InputException
 {
-    protected $errorMessage = 'One of the required parameters is missing or is incomplete';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'One of the required parameters is missing or is incomplete';
 }

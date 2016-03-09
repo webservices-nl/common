@@ -26,10 +26,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Webservicesnl\\Client\\": "src/Common/Client",
-      "Webservicesnl\\Common\\": "src/Common/Config",
-      "Webservicesnl\\Endpoint\\": "src/Common/Endpoint",
-      "Webservicesnl\\Exception\\": "src/Common/Exception"
+      "Webservicesnl\\Common\\": "src/Common/"
     }
   },
   "autoload-dev": {

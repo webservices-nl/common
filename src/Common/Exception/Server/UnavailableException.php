@@ -1,13 +1,18 @@
 <?php
 
-namespace Webservicesnl\Exception\Server;
+namespace Webservicesnl\Common\Exception\Server;
 
-use Webservicesnl\Exception\ServerException;
+use Webservicesnl\Common\Exception\ServerException;
 
 /**
  * Class UnavailableException.
  */
 class UnavailableException extends ServerException
 {
-    protected $errorMessage = 'An error occurred that causes the service to be unavailable';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'An error occurred that causes the service to be unavailable';
 }

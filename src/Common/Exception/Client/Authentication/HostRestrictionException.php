@@ -1,13 +1,18 @@
 <?php
 
-namespace Webservicesnl\Exception\Client\Authentication;
+namespace Webservicesnl\Common\Exception\Client\Authentication;
 
-use Webservicesnl\Exception\Client\AuthenticationException;
+use Webservicesnl\Common\Exception\Client\AuthenticationException;
 
 /**
  * Class HostRestrictionException.
  */
 class HostRestrictionException extends AuthenticationException
 {
-    protected $errorMessage = 'Authentication failed due to restrictions on hosts and/or ip addresses';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'Authentication failed due to restrictions on hosts and/or ip addresses';
 }
