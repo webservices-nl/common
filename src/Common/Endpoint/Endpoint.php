@@ -6,8 +6,10 @@ use Webservicesnl\Common\Exception\Client\InputException;
 
 /**
  * Class Endpoint.
+ * Helper class for managing a Webservices' Endpoint. It is mainly used by the EndpointManager.
  *
- * Class definition of Webservices Endpoint
+ * @see Manager
+ *
  */
 class Endpoint
 {
@@ -31,7 +33,7 @@ class Endpoint
      *
      * @var \Datetime
      */
-    protected $lastConnected = null;
+    protected $lastConnected;
 
     /**
      * Current status of the server.
@@ -51,8 +53,6 @@ class Endpoint
      * ServerConfig constructor.
      *
      * @param string $url
-     *
-     * @throws InputException
      */
     public function __construct($url)
     {
@@ -85,16 +85,20 @@ class Endpoint
 
     /**
      * @param string $status
+     *
+     * @throws InputException
      */
     public function setStatus($status)
     {
-        if (!in_array($status, self::$statuses)) {
-            throw new \InvalidArgumentException('Not a valid status');
+        if (!in_array($status, self::$statuses, true)) {
+            throw new InputException('Not a valid status');
         }
         $this->status = $status;
     }
 
     /**
+     * The url of the endpoint
+     *
      * @return string
      */
     public function getUrl()
@@ -103,14 +107,8 @@ class Endpoint
     }
 
     /**
-     * @param string $url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-
-    /**
+     * Returns if the endpoint is active
+     *
      * @return bool
      */
     public function isActive()
@@ -119,6 +117,8 @@ class Endpoint
     }
 
     /**
+     * Returns if the endpoint is disabled
+     *
      * @return bool
      */
     public function isDisabled()
@@ -127,6 +127,8 @@ class Endpoint
     }
 
     /**
+     * Returns if the endpoint is in error
+     *
      * @return bool
      */
     public function isError()

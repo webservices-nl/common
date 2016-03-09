@@ -3,13 +3,16 @@
 namespace Webservicesnl\Common\Endpoint;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Webservicesnl\Common\Exception\Client\Input\InvalidException;
+use Webservicesnl\Common\Exception\Client\InputException;
 use Webservicesnl\Common\Exception\Server\NoServerAvailableException;
 
 /**
  * Class Manager.
  *
- * Manages Endpoints for a protocol client
+ * Manages Endpoints for a protocol client. The manager keeps track of the activated endpoint. It can provide another
+ * endpoint, or enable or disable one. If an endpoint is in Error, it can be enabled after 60 min.
+ *
+ * @see Endpoint
  */
 class Manager
 {
@@ -20,6 +23,8 @@ class Manager
 
     /**
      * Manager constructor.
+     *
+     * Initiate empty endpoint collection
      */
     public function __construct()
     {
@@ -28,12 +33,12 @@ class Manager
 
     /**
      * Create endpoint.
+     * Create endpoint from url and add to collection
      *
      * @param string $url
      *
      * @return Endpoint
-     *
-     * @throws InvalidException
+     * @throws InputException
      */
     public function createEndpoint($url)
     {
@@ -48,68 +53,24 @@ class Manager
      *
      * @param Endpoint $newEndpoint
      *
-     * @throws InvalidException
+     * @throws InputException
      */
     public function addEndpoint(Endpoint $newEndpoint)
     {
         if ($this->endpoints->contains($newEndpoint)) {
-            throw new InvalidException('Endpoint already added');
+            throw new InputException('Endpoint already added');
         }
 
         // all newly added Endpoints are set to DISABLED, apart from the first one
-        $status = ($this->endpoints->isEmpty()) ? Endpoint::STATUS_ACTIVE : Endpoint::STATUS_DISABLED;
+        $status = $this->getEndpoints()->isEmpty() ? Endpoint::STATUS_ACTIVE : Endpoint::STATUS_DISABLED;
         $newEndpoint->setStatus($status);
 
         $this->getEndpoints()->add($newEndpoint);
     }
 
     /**
-     * @param array|Endpoint[] $endpoints
+     * return Endpoint collection
      *
-     * @throws InvalidException
-     */
-    public function addEndpoints(array $endpoints = [])
-    {
-        foreach ($endpoints as $endpoint) {
-            $this->addEndpoint($endpoint);
-        }
-    }
-
-    /**
-     * Try to activate an Endpoint as the active endpoint.
-     * If endpoint status is Error, first check if it can be safely enabled
-     *
-     * @param Endpoint $newActive
-     * @param bool     $force
-     *
-     * @throws InvalidException
-     * @return Endpoint
-     */
-    public function activateEndpoint(Endpoint $newActive, $force = false)
-    {
-        if (!$this->getEndpoints()->contains($newActive)) {
-            throw new InvalidException('Endpoint is not part of this manager');
-        }
-
-
-        if ($force === false && $this->canBeActivated($newActive) === false) {
-            throw new InvalidException('Can not activate this endpoint');
-        }
-
-        // set all non-error endpoints to disabled
-        $this->getEndpoints()->map(function (Endpoint $endpoint) {
-            if ($endpoint->isError() === false) {
-                $endpoint->setStatus(Endpoint::STATUS_DISABLED);
-            }
-        });
-
-        // update status of the new Endpoint to Active
-        $newActive->setStatus(Endpoint::STATUS_ACTIVE);
-
-        return $newActive;
-    }
-
-    /**
      * @return ArrayCollection
      */
     public function getEndpoints()
@@ -118,7 +79,33 @@ class Manager
     }
 
     /**
-     * Try to determine if this endpoint should re-enabled
+     * Try to activate an Endpoint as the active endpoint.
+     * If endpoint status is Error, first check if it can be safely enabled
+     *
+     * @param Endpoint $newActive Endpoint to be enabled
+     * @param bool     $force     when true, skips the cool down check
+     *
+     * @throws InputException
+     * @return Endpoint
+     */
+    public function activateEndpoint(Endpoint $newActive, $force = false)
+    {
+        if (!$this->getEndpoints()->contains($newActive)) {
+            throw new InputException('Endpoint is not part of this manager');
+        }
+
+        if ($force === false && $this->canBeActivated($newActive) === false) {
+            throw new InputException('Can not activate this endpoint');
+        }
+
+        $this->disableAll();
+        $newActive->setStatus(Endpoint::STATUS_ACTIVE);
+
+        return $newActive;
+    }
+
+    /**
+     * Determine if this endpoint can re-enabled
      *
      * @param Endpoint $newActive
      *
@@ -126,7 +113,7 @@ class Manager
      */
     private function canBeActivated(Endpoint $newActive)
     {
-        // if newActive is currently in status 'error' first determine if it can be re-enabled when force is not set
+        // if newActive is currently in error, see if it can be re-enabled
         if ($newActive->isError() === true) {
             $offlineInterval = new \DateTime();
             $offlineInterval->modify('-60 minutes');
@@ -138,27 +125,37 @@ class Manager
     }
 
     /**
-     * Returns current an active endpoint.
+     * Disable all endpoints, except the ones in error
+     *
+     * @throws InputException
+     */
+    private function disableAll()
+    {
+        // set all non-error endpoints to disabled
+        $this->getEndpoints()->map(function (Endpoint $endpoint) {
+            if ($endpoint->isError() === false) {
+                $endpoint->setStatus(Endpoint::STATUS_DISABLED);
+            }
+        });
+    }
+
+    /**
+     * Returns a active endpoint.
+     * Tries to find the current active endpoint, or enable one
      *
      * @return Endpoint
      *
      * @throws NoServerAvailableException
+     * @throws InputException
      */
     public function getActiveEndpoint()
     {
-        // try to get endpoint with status active (should be one)
+        // try to get endpoint with status active
         $active = $this->getEndpoints()->filter(function (Endpoint $endpoint) {
             return ($endpoint->getStatus() === Endpoint::STATUS_ACTIVE);
         });
 
-        // when active is empty, get first disabled endpoint
-        if ($active->isEmpty() === true) {
-            $active = $this->getEndpoints()->filter(function (Endpoint $endpoint) {
-                return ($endpoint->getStatus() === Endpoint::STATUS_DISABLED);
-            });
-        }
-
-        // when still empty, get first endpoint in Error
+        // when empty, try other endpoints
         if ($active->isEmpty() === true) {
             $active = $this->getEndpoints()->filter(function (Endpoint $endpoint) {
                 return $this->canBeActivated($endpoint);
