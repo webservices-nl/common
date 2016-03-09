@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 - probably a lot of bugs
+
+## [0.0.5] (2016-03-09) 
+- Merged namespaces in ```Webservicesnl\Common```
+- Updated EndpointManager functionality
   
 ## [0.0.4] (2016-03-07) 
 - Added Client Namespace
