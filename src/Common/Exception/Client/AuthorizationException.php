@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\ClientException;
  */
 class AuthorizationException extends ClientException
 {
-    protected $errorMessage = 'The client is authenticated, but isn’t allowed to use the requested functionality';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'The client is authenticated, but isn’t allowed to use the requested functionality';
 }

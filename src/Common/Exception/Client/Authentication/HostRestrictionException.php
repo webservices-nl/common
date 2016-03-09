@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\Client\AuthenticationException;
  */
 class HostRestrictionException extends AuthenticationException
 {
-    protected $errorMessage = 'Authentication failed due to restrictions on hosts and/or ip addresses';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'Authentication failed due to restrictions on hosts and/or ip addresses';
 }

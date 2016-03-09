@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\ServerException;
  */
 class NoServerAvailableException extends ServerException
 {
-    protected $errorMessage = 'We seem to have lost our servers';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'We seem to have lost our servers';
 }

@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\Client\AuthenticationException;
  */
 class UsernameException extends AuthenticationException
 {
-    protected $errorMessage = 'Authentication failed due to an invalid username';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'Authentication failed due to an invalid username';
 }

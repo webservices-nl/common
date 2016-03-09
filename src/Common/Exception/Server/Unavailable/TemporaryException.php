@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\Server\UnavailableException;
  */
 class TemporaryException extends UnavailableException
 {
-    protected $errorMessage = 'The service is unavailable due to a temporary technical problem';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'The service is unavailable due to a temporary technical problem';
 }

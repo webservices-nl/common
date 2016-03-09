@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\Client\AuthenticationException;
  */
 class PasswordException extends AuthenticationException
 {
-    protected $errorMessage = 'Authentication failed due to an incorrect password';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'Authentication failed due to an incorrect password';
 }

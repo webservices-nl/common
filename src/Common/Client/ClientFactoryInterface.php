@@ -7,10 +7,15 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Interface ClientFactoryInterface.
+ *
+ * Contract for ClientFactories used by the platform generator
+ *
  */
 interface ClientFactoryInterface extends LoggerAwareInterface
 {
     /**
+     * Initiate ClientFactory.
+     *
      * @param string          $platform
      * @param LoggerInterface $logger
      *
@@ -19,7 +24,7 @@ interface ClientFactoryInterface extends LoggerAwareInterface
     public static function build($platform, LoggerInterface $logger = null);
 
     /**
-     * Build connector.
+     * Build this Factory providing connector.
      *
      * @param array $settings
      *

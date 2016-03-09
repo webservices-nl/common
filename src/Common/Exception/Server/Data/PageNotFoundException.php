@@ -10,5 +10,10 @@ use Webservicesnl\Common\Exception\Server\DataException;
  */
 class PageNotFoundException extends DataException
 {
-    protected $errorMessage = 'The requested result page does not exist';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'The requested result page does not exist';
 }

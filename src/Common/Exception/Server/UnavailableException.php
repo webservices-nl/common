@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\ServerException;
  */
 class UnavailableException extends ServerException
 {
-    protected $errorMessage = 'An error occurred that causes the service to be unavailable';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'An error occurred that causes the service to be unavailable';
 }

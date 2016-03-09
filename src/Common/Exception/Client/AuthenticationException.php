@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\ClientException;
  */
 class AuthenticationException extends ClientException
 {
-    protected $errorMessage = 'Authentication of the client has failed  , the client is not logged in';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'Authentication of the client has failed, the client is not logged in';
 }

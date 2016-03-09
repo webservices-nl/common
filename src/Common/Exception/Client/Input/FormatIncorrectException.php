@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\Client\InputException;
  */
 class FormatIncorrectException extends InputException
 {
-    protected $errorMessage = 'One of the parameters contains a syntax error or is in an incorrect format';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'One of the parameters contains a syntax error or is in an incorrect format';
 }

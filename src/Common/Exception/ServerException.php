@@ -10,7 +10,9 @@ namespace Webservicesnl\Common\Exception;
 class ServerException extends Exception
 {
     /**
+     * Error message
+     *
      * @var string
      */
-    protected $errorMessage = 'Something went wrong, and it\'s our fault';
+    protected static $errorMessage = 'Something went wrong, and it\'s our fault';
 }

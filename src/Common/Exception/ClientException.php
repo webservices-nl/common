@@ -10,7 +10,9 @@ namespace Webservicesnl\Common\Exception;
 class ClientException extends Exception
 {
     /**
+     * Error message
+     *
      * @var string
      */
-    protected $errorMessage = 'General error, caused by the client';
+    protected static $errorMessage = 'General error, caused by the client';
 }

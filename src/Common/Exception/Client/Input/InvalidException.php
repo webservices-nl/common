@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\Client\InputException;
  */
 class InvalidException extends InputException
 {
-    protected $errorMessage = 'One of the parameters contains an invalid or disallowed value';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'One of the parameters contains an invalid or disallowed value';
 }

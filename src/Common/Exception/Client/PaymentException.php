@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\ClientException;
  */
 class PaymentException extends ClientException
 {
-    protected $errorMessage = 'The request cannot be processed, due to sufficient balance/credits';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'The request cannot be processed, due to sufficient balance/credits';
 }

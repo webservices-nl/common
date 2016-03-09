@@ -9,5 +9,10 @@ use Webservicesnl\Common\Exception\Server\DataException;
  */
 class NotFoundException extends DataException
 {
-    protected $errorMessage = 'The requested data is not available';
+    /**
+     * Error message
+     *
+     * @var string
+     */
+    protected static $errorMessage = 'The requested data is not available';
 }
