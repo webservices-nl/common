@@ -5,7 +5,7 @@ namespace Webservicesnl\Test\Endpoint;
 use League\FactoryMuffin\Facade as FactoryMuffin;
 use Webservicesnl\Common\Endpoint\Endpoint;
 use Webservicesnl\Common\Endpoint\Manager;
-use Webservicesnl\Common\Exception\Client\Input\InvalidException;
+use Webservicesnl\Common\Exception\Client\InputException;
 
 /**
  * Class ManagerTest.
@@ -35,19 +35,18 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedExceptionMessage No active server available
      * @expectedException \Webservicesnl\Common\Exception\Server\NoServerAvailableException
      */
     public function testEmptyManager()
     {
         $manager = new Manager();
-        $this->assertEmpty($manager->getEndpoints());
-
-        $this->expectExceptionMessage('No active server available');
+        static::assertEmpty($manager->getEndpoints());
         $manager->getActiveEndpoint();
     }
 
     /**
-     *
+     * Test to create and endpoint
      */
     public function testCreateEndpoint()
     {
@@ -55,14 +54,14 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $url = 'http://validurl.com';
         $newEndpoint = $manager->createEndpoint($url);
 
-        $this->assertInstanceOf('Webservicesnl\Common\Endpoint\Endpoint', $newEndpoint);
-        $this->assertEquals($url, $newEndpoint->getUrl());
-        $this->assertEquals(Endpoint::STATUS_ACTIVE, $newEndpoint->getStatus());
-        $this->assertEquals(null, $newEndpoint->getLastConnected());
+        static::assertInstanceOf('Webservicesnl\Common\Endpoint\Endpoint', $newEndpoint);
+        static::assertEquals($url, $newEndpoint->getUrl());
+        static::assertEquals(Endpoint::STATUS_ACTIVE, $newEndpoint->getStatus());
+        static::assertEquals(null, $newEndpoint->getLastConnected());
     }
 
     /**
-     * @throws InvalidException
+     * @throws InputException
      */
     public function testAddEndpointToCollection()
     {
@@ -73,12 +72,12 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         foreach ($endpoints as $key => $endpoint) {
             $manager->addEndpoint($endpoint);
-            $this->assertEquals($key + 1, $manager->getEndpoints()->count());
+            static::assertEquals($key + 1, $manager->getEndpoints()->count());
         }
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\Client\Input\InvalidException
+     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
      * @expectedExceptionMessage Endpoint already added
      */
     public function testAddSameEndpointToCollection()
@@ -87,7 +86,6 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         /** @var Endpoint $endpoint */
         $endpoint = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint', ['url' => 'http://someurl.com']);
 
-        $this->setExpectedExceptionFromAnnotation();
         $manager->addEndpoint($endpoint);
         $manager->addEndpoint($endpoint);
     }
@@ -118,21 +116,21 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         // add first EP, should always be set to active
         $manager->addEndpoint($firstEP);
-        $this->assertEquals(
+        static::assertEquals(
             Endpoint::STATUS_ACTIVE,
             $manager->getEndpoints()->get(0)->getStatus(),
             'First endpoint should always be active'
         );
 
         $manager->addEndpoint($secondEP);
-        $this->assertEquals(
+        static::assertEquals(
             Endpoint::STATUS_DISABLED,
             $manager->getEndpoints()->get(1)->getStatus(),
             'Extra endpoints are always set to disabled'
         );
 
         $manager->addEndpoint($thirdEP);
-        $this->assertEquals(
+        static::assertEquals(
             Endpoint::STATUS_DISABLED,
             $manager->getEndpoints()->get(2)->getStatus(),
             'Extra endpoints are always set to disabled'
@@ -158,12 +156,12 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
             $manager->getEndpoints()->add($endpoint);
         }
 
-        $this->assertCount($number, $manager->getEndpoints());
-        $this->assertEquals(Endpoint::STATUS_ACTIVE, $manager->getActiveEndpoint()->getStatus());
+        static::assertCount($number, $manager->getEndpoints());
+        static::assertEquals(Endpoint::STATUS_ACTIVE, $manager->getActiveEndpoint()->getStatus());
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\Client\Input\InvalidException
+     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
      * @expectedExceptionMessage Can not activate this endpoint
      */
     public function testEnableEndpointInError()
@@ -195,53 +193,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         // try to enable endpoint in Error with a short time out
         $manager->activateEndpoint($shortTimeout);
-        $this->assertEquals($manager->getActiveEndpoint(), $active);
-    }
-
-    /**
-     * @throws InvalidException
-     * @throws \Webservicesnl\Common\Exception\Server\NoServerAvailableException
-     */
-    public function testEnableDisabledEndpoints()
-    {
-        $manager = new Manager();
-        $amount = 4;
-
-        /** @var Endpoint $active */
-        $active = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint', ['status' => Endpoint::STATUS_ACTIVE]);
-
-        /** @var Endpoint[] $disabled */
-        $disabled = FactoryMuffin::seed(
-            $amount,
-            'Webservicesnl\Common\Endpoint\Endpoint',
-            [
-                'status' => Endpoint::STATUS_DISABLED,
-                'lastConnected' => function () {
-                    $time = new \DateTime();
-                    $time->modify('-90 minutes');
-
-                    return $time;
-                },
-            ]
-        );
-
-        $manager->addEndpoint($active);
-        $manager->addEndpoints($disabled);
-
-        $this->assertEquals($active, $manager->getActiveEndpoint());
-
-        foreach ($disabled as $endpoint) {
-            $manager->getActiveEndpoint()->setStatus(Endpoint::STATUS_ERROR);
-            $newActive = $manager->getActiveEndpoint();
-            $this->assertEquals($manager->getActiveEndpoint(), $endpoint);
-            $this->assertEquals($newActive->getStatus(), Endpoint::STATUS_ACTIVE);
-        }
-
-        $errored = $manager->getEndpoints()->filter(function (Endpoint $endpoint) {
-            return $endpoint->isError();
-        });
-
-        $this->assertCount($amount, $errored);
+        static::assertEquals($manager->getActiveEndpoint(), $active);
     }
 
     /**
@@ -271,7 +223,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         }
 
         $newActive = $manager->getActiveEndpoint();
-        $this->assertEquals($newActive->getStatus(), Endpoint::STATUS_ACTIVE);
+        static::assertEquals($newActive->getStatus(), Endpoint::STATUS_ACTIVE);
     }
 
     /**
@@ -285,19 +237,19 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         /** @var Endpoint[] $endpoints */
         $endpoints = FactoryMuffin::seed($amount, 'Webservicesnl\Common\Endpoint\Endpoint');
         foreach ($endpoints as $key => $endpoint) {
-            $this->assertEquals(Endpoint::STATUS_DISABLED, $endpoint->getStatus()); // by default status should disabled
+            static::assertEquals(Endpoint::STATUS_DISABLED, $endpoint->getStatus()); // by default status should disabled
             $manager->addEndpoint($endpoint);
         }
 
-        $this->assertEquals($amount, $manager->getEndpoints()->count(), 'number of Endpoints should match');
-        $this->assertEquals($manager->getActiveEndpoint(), $manager->getEndpoints()->first());
+        static::assertEquals($amount, $manager->getEndpoints()->count(), 'number of Endpoints should match');
+        static::assertEquals($manager->getActiveEndpoint(), $manager->getEndpoints()->first());
 
         $manager->activateEndpoint($endpoints[2]);
-        $this->assertEquals($manager->getActiveEndpoint(), $manager->getEndpoints()->last());
+        static::assertEquals($manager->getActiveEndpoint(), $manager->getEndpoints()->last());
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\Client\Input\InvalidException
+     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
      * @expectedExceptionMessage Endpoint is not part of this manager
      */
     public function testInvalidEndpoint()
@@ -307,7 +259,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         /** @var Endpoint[] $endpoints */
         $endpoints = FactoryMuffin::seed($amount, 'Webservicesnl\Common\Endpoint\Endpoint');
-        $manager->addEndpoints($endpoints);
+        foreach ($endpoints as $endpoint) {
+            $manager->addEndpoint($endpoint);
+        }
 
         /** @var Endpoint $fakeEndpoint */
         $fakeEndpoint = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint');
@@ -317,8 +271,6 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @throws InvalidException
-     * @throws \Webservicesnl\Common\Exception\ClientException
      * @throws \Webservicesnl\Common\Exception\Client\InputException
      * @throws \Webservicesnl\Common\Exception\Server\NoServerAvailableException
      */
@@ -352,6 +304,6 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         // try to enable endpoint in Error with a short time out
         $result = $manager->activateEndpoint($shortTimeout, true);
 
-        $this->assertEquals($manager->getActiveEndpoint(), $result);
+        static::assertEquals($manager->getActiveEndpoint(), $result);
     }
 }

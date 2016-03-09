@@ -43,25 +43,25 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
             $instance = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint', ['status' => $status]);
 
             // check if status check are valid
-            $this->assertEquals($instance->isActive(), $status === Endpoint::STATUS_ACTIVE);
-            $this->assertEquals($instance->isError(), $status === Endpoint::STATUS_ERROR);
-            $this->assertEquals($instance->isDisabled(), $status === Endpoint::STATUS_DISABLED);
+            static::assertEquals($instance->isActive(), $status === Endpoint::STATUS_ACTIVE);
+            static::assertEquals($instance->isError(), $status === Endpoint::STATUS_ERROR);
+            static::assertEquals($instance->isDisabled(), $status === Endpoint::STATUS_DISABLED);
 
             // some other getter checks
-            $this->assertEquals($instance->getStatus(), $status);
-            $this->assertInstanceOf('\DateTime', $instance->getLastConnected());
-            $this->assertStringStartsWith('http', $instance->getUrl());
+            static::assertEquals($instance->getStatus(), $status);
+            static::assertInstanceOf('\DateTime', $instance->getLastConnected());
+            static::assertStringStartsWith('http', $instance->getUrl());
         }
     }
 
     /**
-     *
+     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
+     * @expectedExceptionMessage Not a valid status
      */
     public function testInvalidStatus()
     {
         /** @var Endpoint $instance */
         $instance = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint');
-        $this->expectException('\InvalidArgumentException');
         $instance->setStatus('fake');
     }
 }
