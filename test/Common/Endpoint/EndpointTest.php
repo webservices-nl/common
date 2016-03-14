@@ -55,13 +55,17 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
-     * @expectedExceptionMessage Not a valid status
+     * test status can't be set to something weird
      */
     public function testInvalidStatus()
     {
         /** @var Endpoint $instance */
-        $instance = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint');
+        $instance = FactoryMuffin::instance(
+            'Webservicesnl\Common\Endpoint\Endpoint',
+            ['status' => Endpoint::STATUS_DISABLED]
+        );
         $instance->setStatus('fake');
+
+        self::assertEquals(Endpoint::STATUS_DISABLED, $instance->getStatus());
     }
 }

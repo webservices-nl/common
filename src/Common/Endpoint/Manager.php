@@ -146,7 +146,6 @@ class Manager
      * @return Endpoint
      *
      * @throws NoServerAvailableException
-     * @throws InputException
      */
     public function getActiveEndpoint()
     {

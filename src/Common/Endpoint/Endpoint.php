@@ -2,10 +2,9 @@
 
 namespace Webservicesnl\Common\Endpoint;
 
-use Webservicesnl\Common\Exception\Client\InputException;
-
 /**
  * Class Endpoint.
+ *
  * Helper class for managing a Webservices' Endpoint. It is mainly used by the EndpointManager.
  *
  * @see Manager
@@ -85,15 +84,12 @@ class Endpoint
 
     /**
      * @param string $status
-     *
-     * @throws InputException
      */
     public function setStatus($status)
     {
-        if (!in_array($status, self::$statuses, true)) {
-            throw new InputException('Not a valid status');
+        if (in_array($status, self::$statuses, true)) {
+            $this->status = $status;
         }
-        $this->status = $status;
     }
 
     /**
