@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 - probably a lot of bugs
 
+## [0.0.6] (2016-03-14) 
+- Updated composer php requirement to include 7.0 as well
+
 ## [0.0.5] (2016-03-09) 
 - Merged namespaces in ```Webservicesnl\Common```
 - Updated EndpointManager functionality
