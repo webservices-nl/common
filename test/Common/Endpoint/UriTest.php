@@ -32,6 +32,15 @@ class UriTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('johndoe:secret', $uri->getUserInfo());
     }
 
+    public function testChangePort()
+    {
+        $uri = new Uri('https://johndoe:secret@mydomain.com:1234');
+        self::assertEquals(1234, $uri->getPort());
+
+        $newUri = $uri->withPort(5678);
+        self::assertEquals(5678, $newUri->getPort());
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Unable to parse URI
@@ -86,11 +95,22 @@ class UriTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid port: 100000. Must be between 1 and 65535
      */
-    public function testPortMustBeValid()
+    public function testPortMustBeLowerThan()
     {
         (new Uri(''))->withPort(100000);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid port: 0. Must be between 1 and 65535
+     */
+    public function testPortMustBeGreaterThan()
+    {
+        (new Uri(''))->withPort(0);
+    }
+
 
     /**
      * @expectedException \InvalidArgumentException

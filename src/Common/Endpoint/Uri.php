@@ -151,7 +151,7 @@ class Uri implements UriInterface
     {
         if (null !== $port) {
             $port = (int) $port;
-            if (1 > $port || 0xffff < $port) {
+            if (1 > $port || 65535 < $port) {
                 throw new \InvalidArgumentException(sprintf('Invalid port: %d. Must be between 1 and 65535', $port));
             }
         }
