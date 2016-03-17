@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 - probably a lot of bugs
 
+## [0.0.7] (2016-03-17)
+- Renamed namespace Webservicenl into WebserviceNl
+- Added PSR-7 compliant UriInterface
+
 ## [0.0.6] (2016-03-14) 
 - Updated composer php requirement to include 7.0 as well
 
