@@ -1,8 +1,8 @@
 <?php
 
-namespace Webservicesnl\Common\Exception\Server\Data;
+namespace WebservicesNl\Common\Exception\Server\Data;
 
-use Webservicesnl\Common\Exception\Server\DataException;
+use WebservicesNl\Common\Exception\Server\DataException;
 
 /**
  * Class PageNotFoundException.

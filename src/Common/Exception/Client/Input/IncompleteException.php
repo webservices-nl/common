@@ -1,8 +1,8 @@
 <?php
 
-namespace Webservicesnl\Common\Exception\Client\Input;
+namespace WebservicesNl\Common\Exception\Client\Input;
 
-use Webservicesnl\Common\Exception\Client\InputException;
+use WebservicesNl\Common\Exception\Client\InputException;
 
 /**
  * Class IncompleteException.

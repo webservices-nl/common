@@ -1,6 +1,6 @@
 <?php
 
-namespace Webservicesnl\Common\Client;
+namespace WebservicesNl\Common\Client;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;

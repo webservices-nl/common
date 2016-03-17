@@ -1,6 +1,6 @@
 <?php
 
-namespace Webservicesnl\Common\Config;
+namespace WebservicesNl\Common\Config;
 
 /**
  * Interface ConfigurableInterface.

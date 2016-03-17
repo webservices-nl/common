@@ -1,10 +1,10 @@
 <?php
 
-namespace Webservicesnl\Common\Endpoint;
+namespace WebservicesNl\Common\Endpoint;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Webservicesnl\Common\Exception\Client\InputException;
-use Webservicesnl\Common\Exception\Server\NoServerAvailableException;
+use WebservicesNl\Common\Exception\Client\InputException;
+use WebservicesNl\Common\Exception\Server\NoServerAvailableException;
 
 /**
  * Class Manager.
@@ -39,6 +39,7 @@ class Manager
      *
      * @return Endpoint
      * @throws InputException
+     * @throws \InvalidArgumentException
      */
     public function createEndpoint($url)
     {
@@ -46,6 +47,24 @@ class Manager
         $this->addEndpoint($endPoint);
 
         return $endPoint;
+    }
+
+    /**
+     * Checks if the given uri is already added to collection
+     *
+     * @param string $uri
+     *
+     * @return bool
+     */
+    public function hasEndpoint($uri)
+    {
+        /** @var ArrayCollection $urlsFound */
+        $urlsFound = $this->getEndpoints()->filter(function (Endpoint $endpoint) use ($uri) {
+            // return when URI and URI string are equal
+            return (string)$endpoint->getUri() === $uri;
+        });
+
+        return $urlsFound->isEmpty() === false;
     }
 
     /**
@@ -57,7 +76,7 @@ class Manager
      */
     public function addEndpoint(Endpoint $newEndpoint)
     {
-        if ($this->endpoints->contains($newEndpoint)) {
+        if ($this->hasEndpoint((string)$newEndpoint->getUri())) {
             throw new InputException('Endpoint already added');
         }
 
@@ -83,7 +102,7 @@ class Manager
      * If endpoint status is Error, first check if it can be safely enabled
      *
      * @param Endpoint $newActive Endpoint to be enabled
-     * @param bool     $force     when true, skips the cool down check
+     * @param bool     $force when true, skips the cool down check
      *
      * @throws InputException
      * @return Endpoint
