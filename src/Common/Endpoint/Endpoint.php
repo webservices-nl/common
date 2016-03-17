@@ -1,6 +1,8 @@
 <?php
 
-namespace Webservicesnl\Common\Endpoint;
+namespace WebservicesNl\Common\Endpoint;
+
+use Psr\Http\Message\UriInterface;
 
 /**
  * Class Endpoint.
@@ -44,18 +46,20 @@ class Endpoint
     /**
      * Server url.
      *
-     * @var string
+     * @var UriInterface
      */
-    protected $url;
+    protected $uri;
 
     /**
      * ServerConfig constructor.
      *
      * @param string $url
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct($url)
     {
-        $this->url = $url;
+        $this->uri = new Uri($url);
     }
 
     /**
@@ -93,17 +97,17 @@ class Endpoint
     }
 
     /**
-     * The url of the endpoint
+     * The url of the endpoint.
      *
-     * @return string
+     * @return UriInterface
      */
-    public function getUrl()
+    public function getUri()
     {
-        return $this->url;
+        return $this->uri;
     }
 
     /**
-     * Returns if the endpoint is active
+     * Returns if the endpoint is active.
      *
      * @return bool
      */
@@ -113,7 +117,7 @@ class Endpoint
     }
 
     /**
-     * Returns if the endpoint is disabled
+     * Returns if the endpoint is disabled.
      *
      * @return bool
      */
@@ -123,12 +127,24 @@ class Endpoint
     }
 
     /**
-     * Returns if the endpoint is in error
+     * Returns if the endpoint is in error.
      *
      * @return bool
      */
     public function isError()
     {
         return $this->getStatus() === self::STATUS_ERROR;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function createFromString($url)
+    {
+        return new static($url);
     }
 }

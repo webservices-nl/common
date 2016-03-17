@@ -1,8 +1,8 @@
 <?php
 
-namespace Webservicesnl\Common\Exception\Server;
+namespace WebservicesNl\Common\Exception\Server;
 
-use Webservicesnl\Common\Exception\ServerException;
+use WebservicesNl\Common\Exception\ServerException;
 
 /**
  * Class NoServerAvailableException.
@@ -10,7 +10,7 @@ use Webservicesnl\Common\Exception\ServerException;
 class NoServerAvailableException extends ServerException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

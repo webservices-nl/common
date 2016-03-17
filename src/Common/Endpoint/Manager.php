@@ -1,10 +1,10 @@
 <?php
 
-namespace Webservicesnl\Common\Endpoint;
+namespace WebservicesNl\Common\Endpoint;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Webservicesnl\Common\Exception\Client\InputException;
-use Webservicesnl\Common\Exception\Server\NoServerAvailableException;
+use WebservicesNl\Common\Exception\Client\InputException;
+use WebservicesNl\Common\Exception\Server\NoServerAvailableException;
 
 /**
  * Class Manager.
@@ -33,12 +33,14 @@ class Manager
 
     /**
      * Create endpoint.
-     * Create endpoint from url and add to collection
+     * Create endpoint from url and add to collection.
      *
      * @param string $url
      *
      * @return Endpoint
+     *
      * @throws InputException
+     * @throws \InvalidArgumentException
      */
     public function createEndpoint($url)
     {
@@ -46,6 +48,24 @@ class Manager
         $this->addEndpoint($endPoint);
 
         return $endPoint;
+    }
+
+    /**
+     * Checks if the given uri is already added to collection.
+     *
+     * @param string $uri
+     *
+     * @return bool
+     */
+    public function hasEndpoint($uri)
+    {
+        /** @var ArrayCollection $urlsFound */
+        $urlsFound = $this->getEndpoints()->filter(function (Endpoint $endpoint) use ($uri) {
+            // return when URI and URI string are equal
+            return (string) $endpoint->getUri() === $uri;
+        });
+
+        return $urlsFound->isEmpty() === false;
     }
 
     /**
@@ -57,7 +77,7 @@ class Manager
      */
     public function addEndpoint(Endpoint $newEndpoint)
     {
-        if ($this->endpoints->contains($newEndpoint)) {
+        if ($this->hasEndpoint((string) $newEndpoint->getUri())) {
             throw new InputException('Endpoint already added');
         }
 
@@ -69,7 +89,7 @@ class Manager
     }
 
     /**
-     * return Endpoint collection
+     * return Endpoint collection.
      *
      * @return ArrayCollection
      */
@@ -80,12 +100,13 @@ class Manager
 
     /**
      * Try to activate an Endpoint as the active endpoint.
-     * If endpoint status is Error, first check if it can be safely enabled
+     * If endpoint status is Error, first check if it can be safely enabled.
      *
      * @param Endpoint $newActive Endpoint to be enabled
      * @param bool     $force     when true, skips the cool down check
      *
      * @throws InputException
+     *
      * @return Endpoint
      */
     public function activateEndpoint(Endpoint $newActive, $force = false)
@@ -105,7 +126,7 @@ class Manager
     }
 
     /**
-     * Determine if this endpoint can re-enabled
+     * Determine if this endpoint can re-enabled.
      *
      * @param Endpoint $newActive
      *
@@ -118,14 +139,14 @@ class Manager
             $offlineInterval = new \DateTime();
             $offlineInterval->modify('-60 minutes');
 
-            return ($newActive->getLastConnected() <= $offlineInterval);
+            return $newActive->getLastConnected() <= $offlineInterval;
         }
 
         return true;
     }
 
     /**
-     * Disable all endpoints, except the ones in error
+     * Disable all endpoints, except the ones in error.
      *
      * @throws InputException
      */
@@ -141,7 +162,7 @@ class Manager
 
     /**
      * Returns a active endpoint.
-     * Tries to find the current active endpoint, or enable one
+     * Tries to find the current active endpoint, or enable one.
      *
      * @return Endpoint
      *
@@ -151,7 +172,7 @@ class Manager
     {
         // try to get endpoint with status active
         $active = $this->getEndpoints()->filter(function (Endpoint $endpoint) {
-            return ($endpoint->getStatus() === Endpoint::STATUS_ACTIVE);
+            return $endpoint->getStatus() === Endpoint::STATUS_ACTIVE;
         });
 
         // when empty, try other endpoints
