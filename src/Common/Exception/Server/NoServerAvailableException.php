@@ -10,7 +10,7 @@ use WebservicesNl\Common\Exception\ServerException;
 class NoServerAvailableException extends ServerException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

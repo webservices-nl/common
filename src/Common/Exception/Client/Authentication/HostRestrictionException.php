@@ -10,7 +10,7 @@ use WebservicesNl\Common\Exception\Client\AuthenticationException;
 class HostRestrictionException extends AuthenticationException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

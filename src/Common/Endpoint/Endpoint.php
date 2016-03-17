@@ -97,7 +97,7 @@ class Endpoint
     }
 
     /**
-     * The url of the endpoint
+     * The url of the endpoint.
      *
      * @return UriInterface
      */
@@ -107,7 +107,7 @@ class Endpoint
     }
 
     /**
-     * Returns if the endpoint is active
+     * Returns if the endpoint is active.
      *
      * @return bool
      */
@@ -117,7 +117,7 @@ class Endpoint
     }
 
     /**
-     * Returns if the endpoint is disabled
+     * Returns if the endpoint is disabled.
      *
      * @return bool
      */
@@ -127,7 +127,7 @@ class Endpoint
     }
 
     /**
-     * Returns if the endpoint is in error
+     * Returns if the endpoint is in error.
      *
      * @return bool
      */
@@ -140,6 +140,7 @@ class Endpoint
      * @param string $url
      *
      * @return static
+     *
      * @throws \InvalidArgumentException
      */
     public static function createFromString($url)

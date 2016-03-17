@@ -10,7 +10,7 @@ use WebservicesNl\Common\Exception\ClientException;
 class InputException extends ClientException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

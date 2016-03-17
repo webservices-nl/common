@@ -5,10 +5,12 @@ namespace WebservicesNl\Common\Endpoint;
 use Psr\Http\Message\UriInterface;
 
 /**
- * Class Uri
+ * Class Uri.
  *
- * Webservices PSR-7 UriInterface
+ * Webservices PSR-7 UriInterface. This is a shameless copy from the Guzzle Uri
+ * @link https://github.com/guzzle/psr7/blob/master/src/Uri.php
  *
+ * Terminology:
  * http://foo:bar@example.com:8042/over/there?name=ferret#nose
  * \__/   \______________________/\_________/ \_________/ \__/
  *  |               |                |            |        |
@@ -27,47 +29,54 @@ class Uri implements UriInterface
      * @var string
      */
     private $fragment = '';
+
     /**
      * Domain name of the URI (eg. example.com).
      *
      * @var string
      */
     private $host = '';
+
     /**
      * Contains data, usually organized in hierarchical form, that appears as a sequence of segments separated by slashes.
      *
      * @var string
      */
     private $path = '';
+
     /**
-     * Retrieve the port component of the URI
+     * Retrieve the port component of the URI.
      *
      * @var int
      */
     private $port;
+
     /**
-     * Separated from the preceding part by a question mark (?), containing a query string of non-hierarchical data
+     * Separated from the preceding part by a question mark (?), containing a query string of non-hierarchical data.
      *
      * @var string
      */
     private $query = '';
+
     /**
      * Retrieve the scheme component of the URI.
      *
      * @var string
      */
     private $scheme = '';
+
     /**
-     * Schemes
+     * Schemes.
      *
      * @var array
      */
     private static $schemes = [
-        'ftp'   => 21,
-        'ssh'   => 22,
-        'http'  => 80,
+        'ftp' => 21,
+        'ssh' => 22,
+        'http' => 80,
         'https' => 443,
     ];
+
     /**
      * Authentication section of the authority.
      *
@@ -113,7 +122,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Filter scheme
+     * Filter scheme.
      *
      * @param string $scheme
      *
@@ -128,23 +137,26 @@ class Uri implements UriInterface
     }
 
     /**
+     * Filter port before setting it.
+     *
      * @param string $scheme
      * @param string $host
      * @param int    $port
      *
      * @return int|null
+     *
      * @throws \InvalidArgumentException if the port is invalid.
      */
     private function filterPort($scheme, $host, $port)
     {
         if (null !== $port) {
-            $port = (int)$port;
+            $port = (int) $port;
             if (1 > $port || 0xffff < $port) {
                 throw new \InvalidArgumentException(sprintf('Invalid port: %d. Must be between 1 and 65535', $port));
             }
         }
 
-        return self::isStandardPort($port, (string)$scheme, (string)$host) ? null : $port;
+        return self::isStandardPort($port, (string) $scheme, (string) $host) ? null : $port;
     }
 
     /**
@@ -171,6 +183,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
+     *
      * @return string string The URI scheme.
      */
     public function getScheme()
@@ -184,6 +197,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      *
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
+     *
      * @return string The URI host.
      */
     public function getHost()
@@ -192,7 +206,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Filters the path of a URI
+     * Filters the path of a URI.
      *
      * @param string $path
      *
@@ -231,11 +245,12 @@ class Uri implements UriInterface
      *
      * Note: this function will convert "=" to "%3D" and "&" to "%26".
      *
-     * @param UriInterface $uri URI to use as a base.
-     * @param string       $key Key to set.
+     * @param UriInterface $uri   URI to use as base.
+     * @param string       $key   Key to set.
      * @param string       $value Value to set.
      *
      * @throws \InvalidArgumentException
+     *
      * @return Uri
      */
     public static function withQueryValue(UriInterface $uri, $key, $value)
@@ -263,9 +278,10 @@ class Uri implements UriInterface
      * Resolve a base URI with a relative URI and return a new URI.
      *
      * @param UriInterface             $base Base URI
-     * @param null|string|UriInterface $rel Relative URI
+     * @param null|string|UriInterface $rel  Relative URI
      *
      * @throws \InvalidArgumentException
+     *
      * @return UriInterface
      */
     public static function resolve(UriInterface $base, $rel = null)
@@ -275,7 +291,7 @@ class Uri implements UriInterface
         }
 
         if (!$rel instanceof UriInterface) {
-            $rel = new Uri($rel);
+            $rel = new self($rel);
         }
 
         // Return the relative uri as-is if it has a scheme.
@@ -305,7 +321,6 @@ class Uri implements UriInterface
                 $parts['query'] = $relParts['query'];
                 $parts['fragment'] = $relParts['fragment'];
             } else {
-
                 $mergedPath = substr($parts['path'], 0, strrpos($parts['path'], '/') + 1);
 
                 $parts['path'] = self::removeDotSegments($mergedPath . $relParts['path']);
@@ -333,6 +348,7 @@ class Uri implements UriInterface
      * @param string $path
      *
      * @return string
+     *
      * @link http://tools.ietf.org/html/rfc3986#section-5.2.4
      */
     public static function removeDotSegments($path)
@@ -379,6 +395,7 @@ class Uri implements UriInterface
      * @param string       $key Query string key value pair to remove.
      *
      * @throws \InvalidArgumentException
+     *
      * @return UriInterface
      */
     public static function withoutQueryValue(UriInterface $uri, $key)
@@ -431,6 +448,7 @@ class Uri implements UriInterface
      * @param string $query
      *
      * @return UriInterface
+     *
      * @throws \InvalidArgumentException
      */
     public function withQuery($query)
@@ -438,7 +456,7 @@ class Uri implements UriInterface
         if (!is_string($query) && !method_exists($query, '__toString')) {
             throw new \InvalidArgumentException('Query string must be a string');
         }
-        $query = (string)$query;
+        $query = (string) $query;
         if (strpos($query, '?') === 0) {
             $query = substr($query, 1);
         }
@@ -451,9 +469,11 @@ class Uri implements UriInterface
     }
 
     /**
+     * Returns new instance with given host
+     *
      * @param string $host
      *
-     * @return Uri
+     * @return UriInterface
      */
     public function withHost($host)
     {
@@ -464,9 +484,12 @@ class Uri implements UriInterface
     }
 
     /**
+     * Returns new instance with given port.
+     *
      * @param int|null $port
      *
      * @throws \InvalidArgumentException
+     *
      * @return UriInterface
      */
     public function withPort($port)
@@ -480,9 +503,12 @@ class Uri implements UriInterface
     }
 
     /**
+     * Returns instance with given path.
+     *
      * @param string $path
      *
      * @throws \InvalidArgumentException
+     *
      * @return UriInterface
      */
     public function withPath($path)
@@ -499,13 +525,14 @@ class Uri implements UriInterface
     }
 
     /**
-     * Return an instance with the specified scheme.
+     * Return new instance with the specified scheme.
      *
      * {@inheritdoc}
      *
      * @param string $scheme The scheme to use with the new instance.
      *
      * @throws \InvalidArgumentException
+     *
      * @return UriInterface
      */
     public function withScheme($scheme)
@@ -520,6 +547,8 @@ class Uri implements UriInterface
     }
 
     /**
+     * Returns new instance with given user info
+     *
      * @param string      $user
      * @param string|null $password
      *
@@ -559,6 +588,7 @@ class Uri implements UriInterface
      * - If a fragment is present, it MUST be prefixed by "#".
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     *
      * @return string
      */
     public function __toString()
@@ -573,7 +603,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Create a URI string from its various parts
+     * Create a URI string from its various parts.
      *
      * @param string $scheme
      * @param string $authority
@@ -583,8 +613,13 @@ class Uri implements UriInterface
      *
      * @return string
      */
-    private static function createUriString($scheme = null, $authority = null, $path = null, $query = null, $fragment = null)
-    {
+    private static function createUriString(
+        $scheme = null,
+        $authority = null,
+        $path = null,
+        $query = null,
+        $fragment = null
+    ) {
         $uri = '';
         $hierPart = '';
 
@@ -628,6 +663,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
+     *
      * @return string The URI authority, in "[user-info@]host[:port]" format.
      */
     public function getAuthority()
@@ -667,6 +703,7 @@ class Uri implements UriInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
+     *
      * @return string The URI path.
      */
     public function getPath()
@@ -691,6 +728,7 @@ class Uri implements UriInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
+     *
      * @return string The URI fragment.
      */
     public function getFragment()

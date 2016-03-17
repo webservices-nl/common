@@ -10,7 +10,7 @@ namespace WebservicesNl\Common\Exception;
 class ServerException extends Exception
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

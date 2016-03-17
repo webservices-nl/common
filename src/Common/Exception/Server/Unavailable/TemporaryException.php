@@ -10,7 +10,7 @@ use WebservicesNl\Common\Exception\Server\UnavailableException;
 class TemporaryException extends UnavailableException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

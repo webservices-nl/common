@@ -10,7 +10,7 @@ use WebservicesNl\Common\Exception\ClientException;
 class AuthorizationException extends ClientException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

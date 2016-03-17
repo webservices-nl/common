@@ -10,7 +10,7 @@ use WebservicesNl\Common\Exception\Server\DataException;
 class NotFoundException extends DataException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

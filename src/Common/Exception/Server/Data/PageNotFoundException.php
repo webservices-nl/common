@@ -11,7 +11,7 @@ use WebservicesNl\Common\Exception\Server\DataException;
 class PageNotFoundException extends DataException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

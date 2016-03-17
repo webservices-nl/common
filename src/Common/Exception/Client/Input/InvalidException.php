@@ -10,7 +10,7 @@ use WebservicesNl\Common\Exception\Client\InputException;
 class InvalidException extends InputException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */
