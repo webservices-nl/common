@@ -16,4 +16,11 @@ interface ConfigInterface
      * @return mixed
      */
     public static function configure($settings);
+
+    /**
+     * Returns as array
+     *
+     * @return array
+     */
+    public function toArray();
 }

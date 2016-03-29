@@ -55,7 +55,7 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * test status can't be set to something weird
+     * test status can't be set to something weird.
      */
     public function testInvalidStatus()
     {
@@ -69,14 +69,14 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
         self::assertEquals(Endpoint::STATUS_DISABLED, $instance->getStatus());
     }
 
-
     /**
-     * test status can't be set to something weird
+     * test status can't be set to something weird.
+     * 
+     * @throws \InvalidArgumentException
      */
     public function testCreateFromString()
     {
         $endpoint = Endpoint::createFromString('http://www.blabla.com');
         self::assertInstanceOf('\WebservicesNl\Common\Endpoint\Endpoint', $endpoint);
-
     }
 }
