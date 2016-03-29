@@ -1,8 +1,8 @@
 <?php
 
-namespace Webservicesnl\Common\Exception\Server;
+namespace WebservicesNl\Common\Exception\Server;
 
-use Webservicesnl\Common\Exception\ServerException;
+use WebservicesNl\Common\Exception\ServerException;
 
 /**
  * Class DataException.

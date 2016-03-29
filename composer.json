@@ -14,8 +14,9 @@
   },
   "type": "library",
   "require": {
-    "php": "^5.4",
+    "php": "^5.4 || ^7.0",
     "doctrine/collections": "^1.3",
+    "psr/http-message": "^1.0",
     "psr/log": "^1.0"
   },
   "require-dev": {
@@ -26,20 +27,20 @@
   },
   "autoload": {
     "psr-4": {
-      "Webservicesnl\\Common\\": "src/Common/"
+      "WebservicesNl\\Common\\": "src/Common/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Webservicesnl\\Test\\": "test/"
+      "WebservicesNl\\Test\\": "test/"
     }
   },
   "license": "MIT",
   "authors": [
     {
-      "name": "WebservicesNL",
+      "name": "WebservicesNl",
       "email": "tech@webservices.nl",
-      "homepage": "http://www.webservices.nl"
+      "homepage": "https://webview.webservices.nl"
     }
   ]
 }

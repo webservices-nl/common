@@ -1,6 +1,6 @@
 <?php
 
-namespace Webservicesnl\Common\Exception;
+namespace WebservicesNl\Common\Exception;
 
 /**
  * Class ServerException.
@@ -10,7 +10,7 @@ namespace Webservicesnl\Common\Exception;
 class ServerException extends Exception
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

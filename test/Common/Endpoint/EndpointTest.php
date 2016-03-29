@@ -1,9 +1,9 @@
 <?php
 
-namespace Webservicesnl\Test\Endpoint;
+namespace WebservicesNl\Test\Common\Endpoint;
 
 use League\FactoryMuffin\Facade as FactoryMuffin;
-use Webservicesnl\Common\Endpoint\Endpoint;
+use WebservicesNl\Common\Endpoint\Endpoint;
 
 /**
  * Class EndpointTest.
@@ -40,7 +40,7 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
         // create an instance with all of the possible statuses
         foreach (Endpoint::$statuses as $status) {
             /** @var Endpoint $instance */
-            $instance = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint', ['status' => $status]);
+            $instance = FactoryMuffin::instance('WebservicesNl\Common\Endpoint\Endpoint', ['status' => $status]);
 
             // check if status check are valid
             static::assertEquals($instance->isActive(), $status === Endpoint::STATUS_ACTIVE);
@@ -50,18 +50,33 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
             // some other getter checks
             static::assertEquals($instance->getStatus(), $status);
             static::assertInstanceOf('\DateTime', $instance->getLastConnected());
-            static::assertStringStartsWith('http', $instance->getUrl());
+            static::assertInstanceOf('WebservicesNl\Common\Endpoint\Uri', $instance->getUri());
         }
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
-     * @expectedExceptionMessage Not a valid status
+     * test status can't be set to something weird.
      */
     public function testInvalidStatus()
     {
         /** @var Endpoint $instance */
-        $instance = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint');
+        $instance = FactoryMuffin::instance(
+            'WebservicesNl\Common\Endpoint\Endpoint',
+            ['status' => Endpoint::STATUS_DISABLED]
+        );
         $instance->setStatus('fake');
+
+        self::assertEquals(Endpoint::STATUS_DISABLED, $instance->getStatus());
+    }
+
+    /**
+     * test status can't be set to something weird.
+     * 
+     * @throws \InvalidArgumentException
+     */
+    public function testCreateFromString()
+    {
+        $endpoint = Endpoint::createFromString('http://www.blabla.com');
+        self::assertInstanceOf('\WebservicesNl\Common\Endpoint\Endpoint', $endpoint);
     }
 }

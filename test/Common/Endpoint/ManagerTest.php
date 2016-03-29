@@ -1,11 +1,12 @@
 <?php
 
-namespace Webservicesnl\Test\Endpoint;
+namespace WebservicesNl\Test\Common\Endpoint;
 
 use League\FactoryMuffin\Facade as FactoryMuffin;
-use Webservicesnl\Common\Endpoint\Endpoint;
-use Webservicesnl\Common\Endpoint\Manager;
-use Webservicesnl\Common\Exception\Client\InputException;
+use WebservicesNl\Common\Endpoint\Endpoint;
+use WebservicesNl\Common\Endpoint\Manager;
+use WebservicesNl\Common\Exception\Client\InputException;
+use WebservicesNl\Common\Exception\Server\NoServerAvailableException;
 
 /**
  * Class ManagerTest.
@@ -36,7 +37,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedExceptionMessage No active server available
-     * @expectedException \Webservicesnl\Common\Exception\Server\NoServerAvailableException
+     * @expectedException \WebservicesNl\Common\Exception\Server\NoServerAvailableException
+     * @throws NoServerAvailableException
+     * @throws \PHPUnit_Framework_AssertionFailedError
      */
     public function testEmptyManager()
     {
@@ -46,16 +49,18 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test to create and endpoint
+     * Test to create and endpoint.
+     * @throws \InvalidArgumentException
+     * @throws InputException
      */
     public function testCreateEndpoint()
     {
         $manager = new Manager();
-        $url = 'http://validurl.com';
+        $url = 'http://username:fakepassword@validurl.com/bla';
         $newEndpoint = $manager->createEndpoint($url);
 
-        static::assertInstanceOf('Webservicesnl\Common\Endpoint\Endpoint', $newEndpoint);
-        static::assertEquals($url, $newEndpoint->getUrl());
+        static::assertInstanceOf('WebservicesNl\Common\Endpoint\Endpoint', $newEndpoint);
+        static::assertEquals($url, (string) $newEndpoint->getUri());
         static::assertEquals(Endpoint::STATUS_ACTIVE, $newEndpoint->getStatus());
         static::assertEquals(null, $newEndpoint->getLastConnected());
     }
@@ -68,7 +73,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $manager = new Manager();
 
         /** @var Endpoint[] $endpoints */
-        $endpoints = FactoryMuffin::seed(3, 'Webservicesnl\Common\Endpoint\Endpoint');
+        $endpoints = FactoryMuffin::seed(3, 'WebservicesNl\Common\Endpoint\Endpoint');
 
         foreach ($endpoints as $key => $endpoint) {
             $manager->addEndpoint($endpoint);
@@ -77,14 +82,15 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
+     * @expectedException \WebservicesNl\Common\Exception\Client\InputException
      * @expectedExceptionMessage Endpoint already added
+     * @throws InputException
      */
     public function testAddSameEndpointToCollection()
     {
         $manager = new Manager();
         /** @var Endpoint $endpoint */
-        $endpoint = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint', ['url' => 'http://someurl.com']);
+        $endpoint = FactoryMuffin::instance('WebservicesNl\Common\Endpoint\Endpoint', ['url' => 'http://someurl.com']);
 
         $manager->addEndpoint($endpoint);
         $manager->addEndpoint($endpoint);
@@ -92,6 +98,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test if adding first and subsequent Endpoints are resp. set to Active or Disabled.
+     * @throws InputException
      */
     public function testAddingEndpoint()
     {
@@ -99,18 +106,18 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         /** @var Endpoint $firstEP */
         $firstEP = FactoryMuffin::instance(
-            'Webservicesnl\Common\Endpoint\Endpoint',
+            'WebservicesNl\Common\Endpoint\Endpoint',
             ['status' => Endpoint::STATUS_DISABLED]
         );
         /** @var Endpoint $secondEP */
         $secondEP = FactoryMuffin::instance(
-            'Webservicesnl\Common\Endpoint\Endpoint',
+            'WebservicesNl\Common\Endpoint\Endpoint',
             ['status' => Endpoint::STATUS_ACTIVE]
         );
 
         /** @var Endpoint $thirdEP */
         $thirdEP = FactoryMuffin::instance(
-            'Webservicesnl\Common\Endpoint\Endpoint',
+            'WebservicesNl\Common\Endpoint\Endpoint',
             ['status' => Endpoint::STATUS_ERROR]
         );
 
@@ -139,6 +146,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test setting multiple endpoints.
+     * @throws NoServerAvailableException
      */
     public function testAddingEndpoints()
     {
@@ -147,7 +155,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $number = 3;
         $endpoints = FactoryMuffin::seed(
             $number,
-            'Webservicesnl\Common\Endpoint\Endpoint',
+            'WebservicesNl\Common\Endpoint\Endpoint',
             ['status' => Endpoint::STATUS_DISABLED]
         );
 
@@ -161,8 +169,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
+     * @expectedException \WebservicesNl\Common\Exception\Client\InputException
      * @expectedExceptionMessage Can not activate this endpoint
+     * @throws NoServerAvailableException
+     * @throws InputException
      */
     public function testEnableEndpointInError()
     {
@@ -170,15 +180,15 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         /** @var Endpoint $active */
         $active = FactoryMuffin::instance(
-            'Webservicesnl\Common\Endpoint\Endpoint',
+            'WebservicesNl\Common\Endpoint\Endpoint',
             ['status' => Endpoint::STATUS_ACTIVE]
         );
 
         /** @var Endpoint $shortTimeout */
         $shortTimeout = FactoryMuffin::instance(
-            'Webservicesnl\Common\Endpoint\Endpoint',
+            'WebservicesNl\Common\Endpoint\Endpoint',
             [
-                'status'        => Endpoint::STATUS_ERROR,
+                'status' => Endpoint::STATUS_ERROR,
                 'lastConnected' => function () {
                     $time = new \DateTime();
                     $time->modify('-30 minutes');
@@ -197,7 +207,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \Webservicesnl\Common\Exception\Server\NoServerAvailableException
+     * @throws NoServerAvailableException
      */
     public function testEnableErrorEndpoints()
     {
@@ -207,7 +217,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         /** @var Endpoint[] $disabled */
         $endpoints = FactoryMuffin::seed(
             $amount,
-            'Webservicesnl\Common\Endpoint\Endpoint',
+            'WebservicesNl\Common\Endpoint\Endpoint',
             [
                 'status' => Endpoint::STATUS_ERROR,
                 'lastConnected' => function () {
@@ -227,7 +237,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \Webservicesnl\Common\Exception\Server\NoServerAvailableException
+     * Test get active endpoint.
+     * 
+     * @throws InputException
+     * @throws NoServerAvailableException
      */
     public function testGetActiveEndpoint()
     {
@@ -235,7 +248,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $manager = new Manager();
 
         /** @var Endpoint[] $endpoints */
-        $endpoints = FactoryMuffin::seed($amount, 'Webservicesnl\Common\Endpoint\Endpoint');
+        $endpoints = FactoryMuffin::seed($amount, 'WebservicesNl\Common\Endpoint\Endpoint');
         foreach ($endpoints as $key => $endpoint) {
             static::assertEquals(Endpoint::STATUS_DISABLED, $endpoint->getStatus()); // by default status should disabled
             $manager->addEndpoint($endpoint);
@@ -249,8 +262,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Webservicesnl\Common\Exception\Client\InputException
+     * @expectedException \WebservicesNl\Common\Exception\Client\InputException
      * @expectedExceptionMessage Endpoint is not part of this manager
+     * @throws InputException
      */
     public function testInvalidEndpoint()
     {
@@ -258,21 +272,21 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $manager = new Manager();
 
         /** @var Endpoint[] $endpoints */
-        $endpoints = FactoryMuffin::seed($amount, 'Webservicesnl\Common\Endpoint\Endpoint');
+        $endpoints = FactoryMuffin::seed($amount, 'WebservicesNl\Common\Endpoint\Endpoint');
         foreach ($endpoints as $endpoint) {
             $manager->addEndpoint($endpoint);
         }
 
         /** @var Endpoint $fakeEndpoint */
-        $fakeEndpoint = FactoryMuffin::instance('Webservicesnl\Common\Endpoint\Endpoint');
+        $fakeEndpoint = FactoryMuffin::instance('WebservicesNl\Common\Endpoint\Endpoint');
 
         $manager->activateEndpoint($fakeEndpoint);
     }
 
-
     /**
-     * @throws \Webservicesnl\Common\Exception\Client\InputException
-     * @throws \Webservicesnl\Common\Exception\Server\NoServerAvailableException
+     * @throws \WebservicesNl\Common\Exception\Client\InputException
+     * @throws \WebservicesNl\Common\Exception\Server\NoServerAvailableException
+     * @throws InputException
      */
     public function testEnableEndpointInErrorWithForce()
     {
@@ -280,13 +294,13 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         /** @var Endpoint $active */
         $active = FactoryMuffin::instance(
-            'Webservicesnl\Common\Endpoint\Endpoint',
+            'WebservicesNl\Common\Endpoint\Endpoint',
             ['status' => Endpoint::STATUS_ACTIVE]
         );
 
         /** @var Endpoint $shortTimeout */
         $shortTimeout = FactoryMuffin::instance(
-            'Webservicesnl\Common\Endpoint\Endpoint',
+            'WebservicesNl\Common\Endpoint\Endpoint',
             [
                 'status' => Endpoint::STATUS_ERROR,
                 'lastConnected' => function () {

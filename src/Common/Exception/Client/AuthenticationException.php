@@ -1,8 +1,8 @@
 <?php
 
-namespace Webservicesnl\Common\Exception\Client;
+namespace WebservicesNl\Common\Exception\Client;
 
-use Webservicesnl\Common\Exception\ClientException;
+use WebservicesNl\Common\Exception\ClientException;
 
 /**
  * Class AuthenticationException.
@@ -10,7 +10,7 @@ use Webservicesnl\Common\Exception\ClientException;
 class AuthenticationException extends ClientException
 {
     /**
-     * Error message
+     * Error message.
      *
      * @var string
      */

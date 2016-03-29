@@ -1,6 +1,6 @@
 <?php
 
-namespace Webservicesnl\Common\Exception;
+namespace WebservicesNl\Common\Exception;
 
 /**
  * Class Exception.
