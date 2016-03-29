@@ -12,17 +12,17 @@ class UriTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    const RFC3986_BASE = "http://a/b/c/d;p?q";
+    const RFC3986_BASE = 'http://a/b/c/d;p?q';
 
     /**
-     *
+     * @throws \InvalidArgumentException
      */
     public function testParsesProvidedUrl()
     {
         $uri = new Uri('https://johndoe:secret@mydomain.com:443/path/123?q=abc#test');
 
         // Standard port 443 for https gets ignored.
-        self::assertEquals('https://johndoe:secret@mydomain.com/path/123?q=abc#test', (string)$uri);
+        self::assertEquals('https://johndoe:secret@mydomain.com/path/123?q=abc#test', (string) $uri);
         self::assertEquals('test', $uri->getFragment());
         self::assertEquals('mydomain.com', $uri->getHost());
         self::assertEquals('/path/123', $uri->getPath());
@@ -44,6 +44,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Unable to parse URI
+     *
+     * @throws \InvalidArgumentException
      */
     public function testValidatesUriCanBeParsed()
     {
@@ -51,7 +53,7 @@ class UriTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     *
+     * @throws \InvalidArgumentException
      */
     public function testCanTransformAndRetrievePartsIndividually()
     {
@@ -76,7 +78,7 @@ class UriTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     *
+     * @throws \InvalidArgumentException
      */
     public function testWithUserInfo()
     {
@@ -96,6 +98,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Invalid port: 100000. Must be between 1 and 65535
+     *
+     * @throws \InvalidArgumentException
      */
     public function testPortMustBeLowerThan()
     {
@@ -105,15 +109,18 @@ class UriTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Invalid port: 0. Must be between 1 and 65535
+     *
+     * @throws \InvalidArgumentException
      */
     public function testPortMustBeGreaterThan()
     {
         (new Uri(''))->withPort(0);
     }
 
-
     /**
      * @expectedException \InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function testPathMustBeValid()
     {
@@ -122,14 +129,16 @@ class UriTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function testQueryMustBeValid()
     {
-        (new Uri(''))->withQuery(new \stdClass);
+        (new Uri(''))->withQuery(new \stdClass());
     }
 
     /**
-     *
+     * @throws \InvalidArgumentException
      */
     public function testAllowsFalseyUrlParts()
     {
@@ -137,32 +146,34 @@ class UriTest extends \PHPUnit_Framework_TestCase
         self::assertSame('a', $url->getHost());
         self::assertEquals(1, $url->getPort());
         self::assertSame('/0', $url->getPath());
-        self::assertEquals('0', (string)$url->getQuery());
+        self::assertEquals('0', (string) $url->getQuery());
         self::assertSame('0', $url->getFragment());
-        self::assertEquals('http://a:1/0?0#0', (string)$url);
+        self::assertEquals('http://a:1/0?0#0', (string) $url);
 
         $url = new Uri('');
-        self::assertSame('', (string)$url);
+        self::assertSame('', (string) $url);
 
         $url = new Uri('0');
-        self::assertSame('0', (string)$url);
+        self::assertSame('0', (string) $url);
 
         $url = new Uri('/');
-        self::assertSame('/', (string)$url);
+        self::assertSame('/', (string) $url);
     }
 
     /**
      * @dataProvider getResolveTestCases
      *
-     * @param string $base base Url
-     * @param string $rel new relative path
+     * @param string $base     base Url
+     * @param string $rel      new relative path
      * @param string $expected output
+     *
+     * @throws \InvalidArgumentException
      */
     public function testResolvesUris($base, $rel, $expected)
     {
         $uri = new Uri($base);
         $actual = Uri::resolve($uri, $rel);
-        self::assertEquals($expected, (string)$actual);
+        self::assertEquals($expected, (string) $actual);
     }
 
     /**
@@ -216,7 +227,7 @@ class UriTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     *
+     * @throws \InvalidArgumentException
      */
     public function testAddAndRemoveQueryValues()
     {
@@ -238,7 +249,7 @@ class UriTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     *
+     * @throws \InvalidArgumentException
      */
     public function testGetAuthorityReturnsCorrectPort()
     {
@@ -293,15 +304,17 @@ class UriTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $input
      * @param string $output
+     *
+     * @throws \InvalidArgumentException
      */
     public function testUriEncodesPathProperly($input, $output)
     {
         $uri = new Uri($input);
-        self::assertEquals($output, (string)$uri);
+        self::assertEquals($output, (string) $uri);
     }
 
     /**
-     *
+     * @throws \InvalidArgumentException
      */
     public function testDoesNotAddPortWhenNoPort()
     {
@@ -309,34 +322,36 @@ class UriTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     *
+     * @throws \InvalidArgumentException
      */
     public function testAllowsForRelativeUri()
     {
-        $uri = (new Uri)->withPath('foo');
+        $uri = (new Uri())->withPath('foo');
         self::assertEquals('foo', $uri->getPath());
-        self::assertEquals('foo', (string)$uri);
+        self::assertEquals('foo', (string) $uri);
     }
 
     /**
-     *
+     * @throws \InvalidArgumentException
      */
     public function testAddsSlashForRelativeUriStringWithHost()
     {
-        $uri = (new Uri)->withPath('foo')->withHost('bar.com');
+        $uri = (new Uri())->withPath('foo')->withHost('bar.com');
         self::assertEquals('foo', $uri->getPath());
-        self::assertEquals('bar.com/foo', (string)$uri);
+        self::assertEquals('bar.com/foo', (string) $uri);
     }
 
     /**
      * @dataProvider pathTestNoAuthority
      *
      * @param string $input
+     *
+     * @throws \InvalidArgumentException
      */
     public function testNoAuthority($input)
     {
         $uri = new Uri($input);
-        self::assertEquals($input, (string)$uri);
+        self::assertEquals($input, (string) $uri);
     }
 
     /**
@@ -359,6 +374,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Unable to parse URI
+     *
+     * @throws \InvalidArgumentException
      */
     public function testNoAuthorityWithInvalidPath()
     {

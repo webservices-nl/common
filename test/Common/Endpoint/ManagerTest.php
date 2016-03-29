@@ -5,6 +5,8 @@ namespace WebservicesNl\Test\Common\Endpoint;
 use League\FactoryMuffin\Facade as FactoryMuffin;
 use WebservicesNl\Common\Endpoint\Endpoint;
 use WebservicesNl\Common\Endpoint\Manager;
+use WebservicesNl\Common\Exception\Client\InputException;
+use WebservicesNl\Common\Exception\Server\NoServerAvailableException;
 
 /**
  * Class ManagerTest.
@@ -36,6 +38,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedExceptionMessage No active server available
      * @expectedException \WebservicesNl\Common\Exception\Server\NoServerAvailableException
+     * @throws NoServerAvailableException
+     * @throws \PHPUnit_Framework_AssertionFailedError
      */
     public function testEmptyManager()
     {
@@ -45,7 +49,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test to create and endpoint
+     * Test to create and endpoint.
+     * @throws \InvalidArgumentException
+     * @throws InputException
      */
     public function testCreateEndpoint()
     {
@@ -54,7 +60,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $newEndpoint = $manager->createEndpoint($url);
 
         static::assertInstanceOf('WebservicesNl\Common\Endpoint\Endpoint', $newEndpoint);
-        static::assertEquals($url, (string)$newEndpoint->getUri());
+        static::assertEquals($url, (string) $newEndpoint->getUri());
         static::assertEquals(Endpoint::STATUS_ACTIVE, $newEndpoint->getStatus());
         static::assertEquals(null, $newEndpoint->getLastConnected());
     }
@@ -78,6 +84,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \WebservicesNl\Common\Exception\Client\InputException
      * @expectedExceptionMessage Endpoint already added
+     * @throws InputException
      */
     public function testAddSameEndpointToCollection()
     {
@@ -91,6 +98,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test if adding first and subsequent Endpoints are resp. set to Active or Disabled.
+     * @throws InputException
      */
     public function testAddingEndpoint()
     {
@@ -138,6 +146,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test setting multiple endpoints.
+     * @throws NoServerAvailableException
      */
     public function testAddingEndpoints()
     {
@@ -162,6 +171,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \WebservicesNl\Common\Exception\Client\InputException
      * @expectedExceptionMessage Can not activate this endpoint
+     * @throws NoServerAvailableException
+     * @throws InputException
      */
     public function testEnableEndpointInError()
     {
@@ -177,7 +188,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $shortTimeout = FactoryMuffin::instance(
             'WebservicesNl\Common\Endpoint\Endpoint',
             [
-                'status'        => Endpoint::STATUS_ERROR,
+                'status' => Endpoint::STATUS_ERROR,
                 'lastConnected' => function () {
                     $time = new \DateTime();
                     $time->modify('-30 minutes');
@@ -196,7 +207,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \WebservicesNl\Common\Exception\Server\NoServerAvailableException
+     * @throws NoServerAvailableException
      */
     public function testEnableErrorEndpoints()
     {
@@ -226,7 +237,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \WebservicesNl\Common\Exception\Server\NoServerAvailableException
+     * Test get active endpoint.
+     * 
+     * @throws InputException
+     * @throws NoServerAvailableException
      */
     public function testGetActiveEndpoint()
     {
@@ -250,6 +264,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \WebservicesNl\Common\Exception\Client\InputException
      * @expectedExceptionMessage Endpoint is not part of this manager
+     * @throws InputException
      */
     public function testInvalidEndpoint()
     {
@@ -268,10 +283,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $manager->activateEndpoint($fakeEndpoint);
     }
 
-
     /**
      * @throws \WebservicesNl\Common\Exception\Client\InputException
      * @throws \WebservicesNl\Common\Exception\Server\NoServerAvailableException
+     * @throws InputException
      */
     public function testEnableEndpointInErrorWithForce()
     {
