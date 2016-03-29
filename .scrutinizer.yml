@@ -1,7 +1,6 @@
-application:
-  environment:
-    php:
-      version: 5.6.9
+build:
+    environment:
+        php: '5.6.0'
 
-checks:
-  php: true
+before_commands:
+    - "composer install --prefer-source"
