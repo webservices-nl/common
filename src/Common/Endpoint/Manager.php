@@ -139,7 +139,7 @@ class Manager
             $offlineInterval = new \DateTime();
             $offlineInterval->modify('-60 minutes');
 
-            return $newActive->getLastConnected() <= $offlineInterval;
+            return $newActive->getLastConnected() !== null && $newActive->getLastConnected() <= $offlineInterval;
         }
 
         return true;
@@ -172,7 +172,7 @@ class Manager
     {
         // try to get endpoint with status active
         $active = $this->getEndpoints()->filter(function (Endpoint $endpoint) {
-            return $endpoint->getStatus() === Endpoint::STATUS_ACTIVE;
+            return $endpoint->isActive();
         });
 
         // when empty, try other endpoints
