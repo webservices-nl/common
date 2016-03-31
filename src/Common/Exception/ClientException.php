@@ -14,5 +14,5 @@ class ClientException extends Exception
      *
      * @var string
      */
-    protected static $errorMessage = 'General error, caused by the client';
+    protected static $errorMessage = 'General Client error';
 }

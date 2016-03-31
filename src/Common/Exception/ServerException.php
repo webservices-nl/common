@@ -14,5 +14,5 @@ class ServerException extends Exception
      *
      * @var string
      */
-    protected static $errorMessage = 'Something went wrong, and it\'s our fault';
+    protected static $errorMessage = 'General Server error';
 }
