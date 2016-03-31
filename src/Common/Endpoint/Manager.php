@@ -194,7 +194,7 @@ class Manager
     }
 
     /**
-     * Update active endPoint
+     * Update active endPoint.
      *
      * @throws NoServerAvailableException
      */
