@@ -13,4 +13,9 @@ interface ClientInterface
      * @return string
      */
     public function getProtocolName();
+
+    /**
+     * Make a request
+     */
+    public function call();
 }
