@@ -18,7 +18,7 @@ interface ConfigInterface
     public static function configure($settings);
 
     /**
-     * Returns as array
+     * Returns as array.
      *
      * @return array
      */

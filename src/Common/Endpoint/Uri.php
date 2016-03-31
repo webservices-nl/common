@@ -8,6 +8,7 @@ use Psr\Http\Message\UriInterface;
  * Class Uri.
  *
  * Webservices PSR-7 UriInterface. This is a shameless copy from the Guzzle Uri
+ *
  * @link https://github.com/guzzle/psr7/blob/master/src/Uri.php
  *
  * Terminology:
@@ -469,7 +470,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Returns new instance with given host
+     * Returns new instance with given host.
      *
      * @param string $host
      *
@@ -547,7 +548,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Returns new instance with given user info
+     * Returns new instance with given user info.
      *
      * @param string      $user
      * @param string|null $password

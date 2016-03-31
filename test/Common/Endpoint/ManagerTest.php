@@ -60,7 +60,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $newEndpoint = $manager->createEndpoint($url);
 
         static::assertInstanceOf('WebservicesNl\Common\Endpoint\Endpoint', $newEndpoint);
-        static::assertEquals($url, (string) $newEndpoint->getUri());
+        static::assertEquals($url, (string)$newEndpoint->getUri());
         static::assertEquals(Endpoint::STATUS_ACTIVE, $newEndpoint->getStatus());
         static::assertEquals(null, $newEndpoint->getLastConnected());
     }
@@ -188,7 +188,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $shortTimeout = FactoryMuffin::instance(
             'WebservicesNl\Common\Endpoint\Endpoint',
             [
-                'status' => Endpoint::STATUS_ERROR,
+                'status'        => Endpoint::STATUS_ERROR,
                 'lastConnected' => function () {
                     $time = new \DateTime();
                     $time->modify('-30 minutes');
@@ -219,7 +219,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
             $amount,
             'WebservicesNl\Common\Endpoint\Endpoint',
             [
-                'status' => Endpoint::STATUS_ERROR,
+                'status'        => Endpoint::STATUS_ERROR,
                 'lastConnected' => function () {
                     $time = new \DateTime();
                     $time->modify('-90 minutes');
@@ -238,7 +238,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test get active endpoint.
-     * 
+     *
      * @throws InputException
      * @throws NoServerAvailableException
      */
@@ -302,7 +302,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $shortTimeout = FactoryMuffin::instance(
             'WebservicesNl\Common\Endpoint\Endpoint',
             [
-                'status' => Endpoint::STATUS_ERROR,
+                'status'        => Endpoint::STATUS_ERROR,
                 'lastConnected' => function () {
                     $time = new \DateTime();
                     $time->modify('-30 minutes');
@@ -319,5 +319,27 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $result = $manager->activateEndpoint($shortTimeout, true);
 
         static::assertEquals($manager->getActiveEndpoint(), $result);
+    }
+
+    /**
+     * Test if endpoint last connected is updated
+     *
+     * @throws InputException
+     * @throws NoServerAvailableException
+     */
+    public function testUpdateEndpoint()
+    {
+        $manager = new Manager();
+        /** @var Endpoint[] $endpoints */
+        $endpoints = FactoryMuffin::seed(3, 'WebservicesNl\Common\Endpoint\Endpoint');
+        foreach ($endpoints as $endpoint) {
+            $manager->addEndpoint($endpoint);
+        }
+
+        $endpoint = $manager->updateLastConnected();
+        $dateTime = new \DateTime();
+
+        self::assertInstanceOf('\DateTime', $manager->getActiveEndpoint()->getLastConnected());
+        self::assertEquals($dateTime, $endpoint->getLastConnected(), 'DateTimes should be close to each other', 5);
     }
 }
