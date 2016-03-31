@@ -192,4 +192,17 @@ class Manager
 
         return $endpoint;
     }
+
+    /**
+     * Update active endPoint
+     *
+     * @throws NoServerAvailableException
+     */
+    public function updateLastConnected()
+    {
+        $endpoint = $this->getActiveEndpoint();
+        $endpoint->setLastConnected(new \DateTime());
+
+        return $endpoint;
+    }
 }
