@@ -5,8 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 - probably a lot of bugs
 
-## [0.0.8] (2016-03-29)
-- Added interfaces for future contracts
+## [0.0.9] (2016-03-31)
+- updated webservices exception (quite soapy) into generic webservices exceptions
+- updated EndpointManager,  added updateLastConnected. Added a unit test
+- updated WebservicesNl\Common\Client\ClientInterface
+
+## [0.0.9] (2016-03-29)
+- Added interfaces
 
 ## [0.0.7] (2016-03-17)
 - Renamed namespace Webservicenl into WebserviceNl

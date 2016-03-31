@@ -9,4 +9,4 @@ A library that provides extensions to Webservices' PHP platforms functionality.
 MIT
 
 ## Version
-Latest version 0.0.8
+Latest version 0.0.9
