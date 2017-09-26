@@ -1,0 +1,64 @@
+image: php:7.1
+
+# Select what we should cache
+cache:
+  paths:
+  - vendor/
+
+before_script:
+    # Install git&ssh
+    - apt-get update -yqq
+    - apt-get install openssh-client -yqq > /dev/null
+    - apt-get install git -yqq > /dev/null
+
+    # Setup ssh
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - ssh-keyscan -t rsa git.prod.sup.fdmg.org,$(dig +short git.prod.sup.fdmg.org) >> ~/.ssh/known_hosts
+    - '[[ -f /.dockerinit ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+    # Install extensions for update file manager
+    - apt-get install -yqq libc-client-dev libkrb5-dev > /dev/null
+    - docker-php-ext-install zip > /dev/null
+
+    # Install soap extension
+    - apt-get install -yqq libxml2-dev > /dev/null
+    - docker-php-ext-install soap > /dev/null
+
+stages:
+  - build
+  - analysis
+  - testing
+
+build:composer:
+  stage: build
+  script:
+    - curl --silent --show-error https://getcomposer.org/installer | php
+    - php composer.phar install --no-suggest --no-interaction --ignore-platform-reqs --no-progress
+  artifacts:
+    paths:
+    - vendor
+
+analysis:php-cs-fixer:
+  stage: analysis
+  script:
+    - vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --allow-risky=yes --dry-run --using-cache=no --path-mode=intersection `git diff --name-only --diff-filter=ACMRTUXB HEAD~..$CI_BUILD_REF`
+  dependencies:
+    - build:composer
+
+analysis:security-checker:
+  stage: analysis
+  script:
+    - vendor/bin/security-checker security:check composer.lock
+  dependencies:
+    - build:composer
+
+testing:phpunit:
+  stage: testing
+  script:
+    - pecl install xdebug > /dev/null
+    - docker-php-ext-enable xdebug > /dev/null
+    - php vendor/bin/phpunit --coverage-text --colors=never --exclude-group functional --configuration phpunit.xml
+  dependencies:
+    - build:composer

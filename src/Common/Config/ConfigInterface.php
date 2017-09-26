@@ -6,7 +6,6 @@ namespace WebservicesNl\Common\Config;
  * Interface ConfigurableInterface.
  *
  * This is a generic interface for returning a declaration (config) object
- *
  */
 interface ConfigInterface
 {

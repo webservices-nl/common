@@ -37,10 +37,10 @@ class Manager
      *
      * @param string $url
      *
-     * @return Endpoint
-     *
      * @throws InputException
      * @throws \InvalidArgumentException
+     *
+     * @return Endpoint
      */
     public function createEndpoint($url)
     {
@@ -164,9 +164,9 @@ class Manager
      * Returns a active endpoint.
      * Tries to find the current active endpoint, or enable one.
      *
-     * @return Endpoint
-     *
      * @throws NoServerAvailableException
+     *
+     * @return Endpoint
      */
     public function getActiveEndpoint()
     {
