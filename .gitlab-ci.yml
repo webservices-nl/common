@@ -1,11 +1,13 @@
-image: php:7.1
+stages:
+  - build
+  - analysis
+  - testing
+  - reporting
 
-# Select what we should cache
-cache:
-  paths:
-  - vendor/
-
-before_script:
+build:composer:
+  stage: build
+  image: php:7.1
+  before_script:
     # Install git&ssh
     - apt-get update -yqq
     - apt-get install openssh-client -yqq > /dev/null
@@ -21,27 +23,42 @@ before_script:
     # Install extensions for update file manager
     - apt-get install -yqq libc-client-dev libkrb5-dev > /dev/null
     - docker-php-ext-install zip > /dev/null
-
-    # Install soap extension
-    - apt-get install -yqq libxml2-dev > /dev/null
-    - docker-php-ext-install soap > /dev/null
-
-stages:
-  - build
-  - analysis
-  - testing
-
-build:composer:
-  stage: build
-  script:
     - curl --silent --show-error https://getcomposer.org/installer | php
+  script:
     - php composer.phar install --no-suggest --no-interaction --ignore-platform-reqs --no-progress
+  cache:
+    paths:
+      - vendor
+      - .composer/cache
   artifacts:
     paths:
-    - vendor
+      - vendor
+
+analysis:sonarqube-feedback:
+  stage: analysis
+  image: ciricihq/gitlab-sonar-scanner
+  variables:
+    SONAR_URL: "https://sonar.fdmg.org"
+    SONAR_PROJECT_VERSION: "$CI_BUILD_ID"
+    SONAR_ANALYSIS_MODE: "issues"
+  script:
+    - /usr/bin/sonar-scanner-run.sh
+
+reporting:sonarqube-report:
+  stage: reporting
+  image: ciricihq/gitlab-sonar-scanner
+  variables:
+    SONAR_URL: "https://sonar.fdmg.org"
+    SONAR_PROJECT_VERSION: "$CI_BUILD_ID"
+    SONAR_ANALYSIS_MODE: "publish"
+  script:
+    - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
+  dependencies:
+    - testing:phpunit
 
 analysis:php-cs-fixer:
   stage: analysis
+  image: php:7.1-alpine
   script:
     - vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --allow-risky=yes --dry-run --using-cache=no --path-mode=intersection `git diff --name-only --diff-filter=ACMRTUXB HEAD~..$CI_BUILD_REF`
   dependencies:
@@ -49,6 +66,7 @@ analysis:php-cs-fixer:
 
 analysis:security-checker:
   stage: analysis
+  image: php:7.1-alpine
   script:
     - vendor/bin/security-checker security:check composer.lock
   dependencies:
@@ -56,9 +74,23 @@ analysis:security-checker:
 
 testing:phpunit:
   stage: testing
+  image: php:7.1-alpine
+  before_script:
+    - apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS
+    - docker-php-source extract
+    - pecl install xdebug
+    - docker-php-ext-enable xdebug
+    - docker-php-source delete
+    - echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    - echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    - echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    - echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    - echo "xdebug.remote_connect_back=0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    - apk del .phpize-deps
   script:
-    - pecl install xdebug > /dev/null
-    - docker-php-ext-enable xdebug > /dev/null
-    - php vendor/bin/phpunit --coverage-text --colors=never --exclude-group functional --configuration phpunit.xml
+    - php vendor/bin/phpunit --coverage-text --colors=never --exclude-group functional --coverage-clover=report/phpunit/clover.xml --log-junit=report/phpunit/junit.xml
   dependencies:
     - build:composer
+  artifacts:
+    paths:
+      - report/phpunit
