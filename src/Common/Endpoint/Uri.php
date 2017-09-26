@@ -169,8 +169,8 @@ class Uri implements UriInterface
      * Is a given port standard for the current scheme?
      *
      * @param int    $port
-     * @param string $scheme
-     * @param string $host
+     * @param string|null $scheme
+     * @param string|null $host
      *
      * @return bool
      */
@@ -180,7 +180,7 @@ class Uri implements UriInterface
             return false;
         }
 
-        return array_key_exists($scheme, static::$schemes) && $port === static::$schemes[$scheme];
+        return array_key_exists($scheme, self::$schemes) && $port === static::$schemes[$scheme];
     }
 
     /**
@@ -340,7 +340,7 @@ class Uri implements UriInterface
         }
 
         return new self(
-            static::createUriString(
+            self::createUriString(
                 $parts['scheme'],
                 $parts['authority'],
                 $parts['path'],
@@ -399,7 +399,7 @@ class Uri implements UriInterface
      *
      * Note: this function will convert "=" to "%3D" and "&" to "%26".
      *
-     * @param uriInterface $uri URI to use as a base
+     * @param UriInterface $uri URI to use as a base
      * @param string       $key query string key value pair to remove
      *
      * @throws \InvalidArgumentException
@@ -431,8 +431,8 @@ class Uri implements UriInterface
      */
     public function getPort()
     {
-        if ($this->port === null && array_key_exists($this->getScheme(), static::$schemes)) {
-            return static::$schemes[$this->getScheme()];
+        if ($this->port === null && array_key_exists($this->getScheme(), self::$schemes)) {
+            return self::$schemes[$this->getScheme()];
         }
 
         return $this->port;
@@ -569,7 +569,7 @@ class Uri implements UriInterface
     public function withUserInfo($user, $password = null)
     {
         $info = $user;
-        if ($password) {
+        if ($password !== null) {
             $info .= ':' . $password;
         }
 
@@ -617,11 +617,11 @@ class Uri implements UriInterface
     /**
      * Create a URI string from its various parts.
      *
-     * @param string $scheme
-     * @param string $authority
-     * @param string $path
-     * @param string $query
-     * @param string $fragment
+     * @param string|null $scheme
+     * @param string|null $authority
+     * @param string|null $path
+     * @param string|null $query
+     * @param string|null $fragment
      *
      * @return string
      */

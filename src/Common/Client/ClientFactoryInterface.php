@@ -15,8 +15,8 @@ interface ClientFactoryInterface extends LoggerAwareInterface
     /**
      * Initiate ClientFactory.
      *
-     * @param string          $platform
-     * @param LoggerInterface $logger
+     * @param string               $platform
+     * @param LoggerInterface|null $logger
      *
      * @return static
      */
