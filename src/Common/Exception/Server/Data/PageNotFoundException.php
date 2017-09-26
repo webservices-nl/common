@@ -6,7 +6,6 @@ use WebservicesNl\Common\Exception\Server\DataException;
 
 /**
  * Class PageNotFoundException.
- *
  */
 class PageNotFoundException extends DataException
 {

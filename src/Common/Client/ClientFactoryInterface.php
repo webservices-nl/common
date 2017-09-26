@@ -9,15 +9,14 @@ use Psr\Log\LoggerInterface;
  * Interface ClientFactoryInterface.
  *
  * Contract for ClientFactories used by the platform generator
- *
  */
 interface ClientFactoryInterface extends LoggerAwareInterface
 {
     /**
      * Initiate ClientFactory.
      *
-     * @param string          $platform
-     * @param LoggerInterface $logger
+     * @param string               $platform
+     * @param LoggerInterface|null $logger
      *
      * @return static
      */
