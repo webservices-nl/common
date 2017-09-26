@@ -1,0 +1,21 @@
+language: php
+php:
+  - '7.1'
+  - nightly
+
+before_script:
+  - composer self-update
+  - wget https://scrutinizer-ci.com/ocular.phar
+
+install: composer update --prefer-source $COMPOSER_FLAGS --no-interaction
+
+script:
+- ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
+
+notifications:
+  email:
+    - tech@webservices.nl
+  slack: webservicesnl:pu5cpnpMCo2HXxPlN29DqHwU
+
+after_script:
+- php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
