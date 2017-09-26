@@ -1,5 +1,5 @@
 vendor/
 ansible/
 report/
-composer.lock
 phpunit.xml
+/.php_cs.cache

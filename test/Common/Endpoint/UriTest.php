@@ -9,27 +9,24 @@ use WebservicesNl\Common\Endpoint\Uri;
  */
 class UriTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     *
-     */
     const RFC3986_BASE = 'http://a/b/c/d;p?q';
 
     /**
-     * @throws \InvalidArgumentException
+     * @dataProvider getSomeUrls()
      */
-    public function testParsesProvidedUrl()
+    public function testParsesProvidedHttpsUrl($url, $parts)
     {
-        $uri = new Uri('https://johndoe:secret@mydomain.com:443/path/123?q=abc#test');
+        $uri = new Uri($url);
 
         // Standard port 443 for https gets ignored.
-        self::assertEquals('https://johndoe:secret@mydomain.com/path/123?q=abc#test', (string) $uri);
-        self::assertEquals('test', $uri->getFragment());
-        self::assertEquals('mydomain.com', $uri->getHost());
-        self::assertEquals('/path/123', $uri->getPath());
-        self::assertEquals(null, $uri->getPort());
-        self::assertEquals('q=abc', $uri->getQuery());
-        self::assertEquals('https', $uri->getScheme());
-        self::assertEquals('johndoe:secret', $uri->getUserInfo());
+        self::assertEquals($parts['url'], (string) $uri, 'url without port should match');
+        self::assertEquals($parts['fragment'], $uri->getFragment(), 'Fragment should match');
+        self::assertEquals($parts['host'], $uri->getHost(), 'hosts should match');
+        self::assertEquals($parts['path'], $uri->getPath());
+        self::assertEquals($parts['port'], $uri->getPort());
+        self::assertEquals($parts['query'], $uri->getQuery());
+        self::assertEquals($parts['scheme'], $uri->getScheme());
+        self::assertEquals($parts['userinfo'], $uri->getUserInfo());
     }
 
     public function testChangePort()
@@ -42,13 +39,13 @@ class UriTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Unable to parse URI
-     *
      * @throws \InvalidArgumentException
      */
     public function testValidatesUriCanBeParsed()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to parse URI');
+
         new Uri('///');
     }
 
@@ -96,44 +93,42 @@ class UriTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid port: 100000. Must be between 1 and 65535
-     *
      * @throws \InvalidArgumentException
      */
     public function testPortMustBeLowerThan()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid port: 100000. Must be between 1 and 65535');
+
         (new Uri(''))->withPort(100000);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid port: 0. Must be between 1 and 65535
-     *
      * @throws \InvalidArgumentException
      */
     public function testPortMustBeGreaterThan()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid port: 0. Must be between 1 and 65535');
+
         (new Uri(''))->withPort(0);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     *
      * @throws \InvalidArgumentException
      */
     public function testPathMustBeValid()
     {
+        $this->expectException(\InvalidArgumentException::class);
         (new Uri(''))->withPath([]);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     *
      * @throws \InvalidArgumentException
      */
     public function testQueryMustBeValid()
     {
+        $this->expectException(\InvalidArgumentException::class);
         (new Uri(''))->withQuery(new \stdClass());
     }
 
@@ -182,7 +177,7 @@ class UriTest extends \PHPUnit_Framework_TestCase
     public function getResolveTestCases()
     {
         return [
-//            [self::RFC3986_BASE, 'g:h',           'g:h'],
+            //[self::RFC3986_BASE, 'g:h', 'g:h'],
             [self::RFC3986_BASE, 'g', 'http://a/b/c/g'],
             [self::RFC3986_BASE, './g', 'http://a/b/c/g'],
             [self::RFC3986_BASE, 'g/', 'http://a/b/c/g/'],
@@ -372,14 +367,101 @@ class UriTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Unable to parse URI
-     *
      * @throws \InvalidArgumentException
      */
     public function testNoAuthorityWithInvalidPath()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to parse URI');
+
         $input = 'urn://example:animal:ferret:nose';
         new Uri($input);
+    }
+
+    /**
+     * @return array
+     */
+    public function getSomeUrls()
+    {
+        return [
+            [
+                'https://johndoe:secret@mydomain.com:443/path/123?q=abc#test',
+                [
+                    'url' => 'https://johndoe:secret@mydomain.com/path/123?q=abc#test',
+                    'fragment' => 'test',
+                    'host' => 'mydomain.com',
+                    'path' => '/path/123',
+                    'port' => 443,
+                    'query' => 'q=abc',
+                    'scheme' => 'https',
+                    'userinfo' => 'johndoe:secret',
+                ],
+            ],
+            [
+                'http://johndoe:secret@mydomain.com/path/123?q=abc#test',
+                [
+                    'url' => 'http://johndoe:secret@mydomain.com/path/123?q=abc#test',
+                    'fragment' => 'test',
+                    'host' => 'mydomain.com',
+                    'path' => '/path/123',
+                    'port' => 80,
+                    'query' => 'q=abc',
+                    'scheme' => 'http',
+                    'userinfo' => 'johndoe:secret',
+                ],
+            ],
+            [
+                'ftp://johndoe:secret@mydomain.com:66/path/123?q=abc#test',
+                [
+                    'url' => 'ftp://johndoe:secret@mydomain.com:66/path/123?q=abc#test',
+                    'fragment' => 'test',
+                    'host' => 'mydomain.com',
+                    'path' => '/path/123',
+                    'port' => 66,
+                    'query' => 'q=abc',
+                    'scheme' => 'ftp',
+                    'userinfo' => 'johndoe:secret',
+                ],
+            ],
+            [
+                'ftp://johndoe:secret@mydomain.com/path/123?q=abc#test',
+                [
+                    'url' => 'ftp://johndoe:secret@mydomain.com/path/123?q=abc#test',
+                    'fragment' => 'test',
+                    'host' => 'mydomain.com',
+                    'path' => '/path/123',
+                    'port' => 21,
+                    'query' => 'q=abc',
+                    'scheme' => 'ftp',
+                    'userinfo' => 'johndoe:secret',
+                ],
+            ],
+            [
+                'ssh://johndoe:secret@mydomain.com/path/123?q=abc#test',
+                [
+                    'url' => 'ssh://johndoe:secret@mydomain.com/path/123?q=abc#test',
+                    'fragment' => 'test',
+                    'host' => 'mydomain.com',
+                    'path' => '/path/123',
+                    'port' => 22,
+                    'query' => 'q=abc',
+                    'scheme' => 'ssh',
+                    'userinfo' => 'johndoe:secret',
+                ],
+            ],
+            [
+                'ssh://johndoe:secret@mydomain.com:33979/path/123?q=abc#test',
+                [
+                    'url' => 'ssh://johndoe:secret@mydomain.com:33979/path/123?q=abc#test',
+                    'fragment' => 'test',
+                    'host' => 'mydomain.com',
+                    'path' => '/path/123',
+                    'port' => 33979,
+                    'query' => 'q=abc',
+                    'scheme' => 'ssh',
+                    'userinfo' => 'johndoe:secret',
+                ],
+            ],
+        ];
     }
 }

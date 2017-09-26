@@ -9,7 +9,6 @@ use Psr\Log\LoggerInterface;
  * Interface ClientFactoryInterface.
  *
  * Contract for ClientFactories used by the platform generator
- *
  */
 interface ClientFactoryInterface extends LoggerAwareInterface
 {

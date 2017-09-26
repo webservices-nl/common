@@ -16,7 +16,6 @@ use Psr\Http\Message\UriInterface;
  * \__/   \______________________/\_________/ \_________/ \__/
  *  |               |                |            |        |
  * scheme         authority           path        query   fragment
- *
  */
 class Uri implements UriInterface
 {
@@ -39,7 +38,7 @@ class Uri implements UriInterface
     private $host = '';
 
     /**
-     * Contains data, usually organized in hierarchical form, that appears as a sequence of segments separated by slashes.
+     * Contains data,  usually organized in hierarchical form, that appears as a sequence of segments separated by slashes.
      *
      * @var string
      */
@@ -88,7 +87,7 @@ class Uri implements UriInterface
     private $userInfo = '';
 
     /**
-     * @param string $uri URI to parse and wrap.
+     * @param string $uri URI to parse and wrap
      *
      * @throws \InvalidArgumentException
      */
@@ -106,7 +105,7 @@ class Uri implements UriInterface
     /**
      * Apply parse_url parts to a URI.
      *
-     * @param $parts array of parse_url parts to apply.
+     * @param $parts array of parse_url parts to apply
      *
      * @throws \InvalidArgumentException
      */
@@ -115,10 +114,16 @@ class Uri implements UriInterface
         $this->scheme = array_key_exists('scheme', $parts) ? $this->filterScheme($parts['scheme']) : null;
         $this->userInfo = array_key_exists('user', $parts) ? $parts['user'] : null;
         $this->host = array_key_exists('host', $parts) ? $parts['host'] : null;
-        $this->port = array_key_exists('port', $parts) ? $this->filterPort($this->getScheme(), $this->getHost(), $parts['port']) : null;
+        $this->port = array_key_exists('port', $parts) ? $this->filterPort(
+            $this->getScheme(),
+            $this->getHost(),
+            $parts['port']
+        ) : null;
         $this->path = array_key_exists('path', $parts) ? $this->filterPath($parts['path']) : null;
         $this->query = array_key_exists('query', $parts) ? $this->filterQueryAndFragment($parts['query']) : null;
-        $this->fragment = array_key_exists('fragment', $parts) ? $this->filterQueryAndFragment($parts['fragment']) : null;
+        $this->fragment = array_key_exists('fragment', $parts) ? $this->filterQueryAndFragment(
+            $parts['fragment']
+        ) : null;
         $this->userInfo .= array_key_exists('pass', $parts) ? ':' . $parts['pass'] : null;
     }
 
@@ -144,9 +149,9 @@ class Uri implements UriInterface
      * @param string $host
      * @param int    $port
      *
-     * @return int|null
+     * @throws \InvalidArgumentException if the port is invalid
      *
-     * @throws \InvalidArgumentException if the port is invalid.
+     * @return int|null
      */
     private function filterPort($scheme, $host, $port)
     {
@@ -185,7 +190,7 @@ class Uri implements UriInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
      *
-     * @return string string The URI scheme.
+     * @return string string The URI scheme
      */
     public function getScheme()
     {
@@ -199,7 +204,7 @@ class Uri implements UriInterface
      *
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
      *
-     * @return string The URI host.
+     * @return string the URI host
      */
     public function getHost()
     {
@@ -246,9 +251,9 @@ class Uri implements UriInterface
      *
      * Note: this function will convert "=" to "%3D" and "&" to "%26".
      *
-     * @param UriInterface $uri   URI to use as base.
-     * @param string       $key   Key to set.
-     * @param string       $value Value to set.
+     * @param UriInterface $uri   URI to use as base
+     * @param string       $key   key to set
+     * @param string       $value value to set
      *
      * @throws \InvalidArgumentException
      *
@@ -301,19 +306,19 @@ class Uri implements UriInterface
         }
 
         $relParts = [
-            'scheme'    => $rel->getScheme(),
+            'scheme' => $rel->getScheme(),
             'authority' => $rel->getAuthority(),
-            'path'      => $rel->getPath(),
-            'query'     => $rel->getQuery(),
-            'fragment'  => $rel->getFragment(),
+            'path' => $rel->getPath(),
+            'query' => $rel->getQuery(),
+            'fragment' => $rel->getFragment(),
         ];
 
         $parts = [
-            'scheme'    => $base->getScheme(),
+            'scheme' => $base->getScheme(),
             'authority' => $base->getAuthority(),
-            'path'      => $base->getPath(),
-            'query'     => $base->getQuery(),
-            'fragment'  => $base->getFragment(),
+            'path' => $base->getPath(),
+            'query' => $base->getQuery(),
+            'fragment' => $base->getFragment(),
         ];
 
         if (!empty($relParts['path'])) {
@@ -334,13 +339,15 @@ class Uri implements UriInterface
             $parts['fragment'] = $relParts['fragment'];
         }
 
-        return new self(static::createUriString(
-            $parts['scheme'],
-            $parts['authority'],
-            $parts['path'],
-            $parts['query'],
-            $parts['fragment']
-        ));
+        return new self(
+            static::createUriString(
+                $parts['scheme'],
+                $parts['authority'],
+                $parts['path'],
+                $parts['query'],
+                $parts['fragment']
+            )
+        );
     }
 
     /**
@@ -392,8 +399,8 @@ class Uri implements UriInterface
      *
      * Note: this function will convert "=" to "%3D" and "&" to "%26".
      *
-     * @param UriInterface $uri URI to use as a base.
-     * @param string       $key Query string key value pair to remove.
+     * @param uriInterface $uri URI to use as a base
+     * @param string       $key query string key value pair to remove
      *
      * @throws \InvalidArgumentException
      *
@@ -420,10 +427,14 @@ class Uri implements UriInterface
      *
      * {@inheritdoc}
      *
-     * @return null|int The URI port.
+     * @return null|int the URI port
      */
     public function getPort()
     {
+        if ($this->port === null && array_key_exists($this->getScheme(), static::$schemes)) {
+            return static::$schemes[$this->getScheme()];
+        }
+
         return $this->port;
     }
 
@@ -448,9 +459,9 @@ class Uri implements UriInterface
     /**
      * @param string $query
      *
-     * @return UriInterface
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return UriInterface
      */
     public function withQuery($query)
     {
@@ -530,7 +541,7 @@ class Uri implements UriInterface
      *
      * {@inheritdoc}
      *
-     * @param string $scheme The scheme to use with the new instance.
+     * @param string $scheme the scheme to use with the new instance
      *
      * @throws \InvalidArgumentException
      *
@@ -665,7 +676,7 @@ class Uri implements UriInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
      *
-     * @return string The URI authority, in "[user-info@]host[:port]" format.
+     * @return string the URI authority, in "[user-info@]host[:port]" format
      */
     public function getAuthority()
     {
@@ -690,7 +701,7 @@ class Uri implements UriInterface
      *
      * {@inheritdoc}
      *
-     * @return string The URI user information, in "username[:password]" format.
+     * @return string the URI user information, in "username[:password]" format
      */
     public function getUserInfo()
     {
@@ -705,7 +716,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      *
-     * @return string The URI path.
+     * @return string the URI path
      */
     public function getPath()
     {
@@ -730,7 +741,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      *
-     * @return string The URI fragment.
+     * @return string the URI fragment
      */
     public function getFragment()
     {

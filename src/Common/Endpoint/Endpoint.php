@@ -10,7 +10,6 @@ use Psr\Http\Message\UriInterface;
  * Helper class for managing a Webservices' Endpoint. It is mainly used by the EndpointManager.
  *
  * @see Manager
- *
  */
 class Endpoint
 {
@@ -139,9 +138,9 @@ class Endpoint
     /**
      * @param string $url
      *
-     * @return static
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return static
      */
     public static function createFromString($url)
     {
