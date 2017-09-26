@@ -136,10 +136,7 @@ class Uri implements UriInterface
      */
     private function filterScheme($scheme)
     {
-        $scheme = strtolower($scheme);
-        $scheme = rtrim($scheme, ':/');
-
-        return $scheme;
+        return strtolower(rtrim($scheme, ':/'));
     }
 
     /**
