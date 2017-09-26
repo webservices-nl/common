@@ -1,6 +1,5 @@
-build:
-    environment:
-        php: '7.1.0'
-
-before_commands:
-    - "composer install --prefer-source"
+tools:
+  php_sim: true
+  php_pdepend: true
+  php_analyzer: true
+  external_code_coverage: true
